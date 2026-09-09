@@ -141,3 +141,11 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Miljövariabler
+.env
+
+# Lokala SQLite-databaser
+*.db
+*.sqlite
+*.sqlite3
