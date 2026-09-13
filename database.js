@@ -392,6 +392,58 @@ function updateAvailableTime(
     );
 }
 
+function cancelAvailableTime(timeId, callback) {
+    const sql = `
+        SELECT status
+        FROM available_times
+        WHERE id = ?
+    `;
+
+    db.get(sql, [timeId], (err, time) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (!time) {
+            callback(new Error("Tiden finns inte."));
+            return;
+        }
+
+        db.run(
+            `UPDATE available_times
+             SET status = 'avbokad'
+             WHERE id = ?`,
+            [timeId],
+            (updateErr) => {
+                if (updateErr) {
+                    callback(updateErr);
+                    return;
+                }
+
+                db.run(
+                    `UPDATE bookings
+                     SET status = 'avbokad'
+                     WHERE available_time_id = ?
+                       AND status = 'bokad'`,
+                    [timeId],
+                    (bookingErr) => {
+                        if (bookingErr) {
+                            callback(bookingErr);
+                            return;
+                        }
+
+                        callback(null, {
+                            id: timeId,
+                            status: "avbokad"
+                        });
+                    }
+                );
+            }
+        );
+    });
+}
+
 module.exports = {
     db,
     createUser,
@@ -402,5 +454,6 @@ module.exports = {
     cancelBooking,
     getBookingsForTeacher,
     getTeacherTimes,
-    updateAvailableTime
+    updateAvailableTime,
+    cancelAvailableTime
 };
