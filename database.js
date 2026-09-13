@@ -444,6 +444,43 @@ function cancelAvailableTime(timeId, callback) {
     });
 }
 
+function getBookingDetails(bookingId, callback) {
+    const sql = `
+        SELECT
+            bookings.id,
+            users.name AS student_name,
+            users.email AS student_email,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            teacher.name AS teacher_name
+        FROM bookings
+        JOIN users
+            ON bookings.student_id = users.id
+        JOIN available_times
+            ON bookings.available_time_id = available_times.id
+        JOIN users AS teacher
+            ON available_times.teacher_id = teacher.id
+        WHERE bookings.id = ?
+          AND bookings.status = 'bokad'
+    `;
+
+    db.get(sql, [bookingId], (err, booking) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (!booking) {
+            callback(new Error("Bokningen finns inte eller är inte aktiv."));
+            return;
+        }
+
+        callback(null, booking);
+    });
+}
+
 module.exports = {
     db,
     createUser,
@@ -455,5 +492,6 @@ module.exports = {
     getBookingsForTeacher,
     getTeacherTimes,
     updateAvailableTime,
-    cancelAvailableTime
+    cancelAvailableTime,
+    getBookingDetails
 };
