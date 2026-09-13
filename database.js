@@ -5,7 +5,11 @@ const db = new sqlite3.Database("./timetotalk.db", (err) => {
         console.error("Kunde inte öppna databasen:", err.message);
     } else {
         console.log("SQLite-databasen är ansluten.");
+        
+        //aktivera foregin keys
+        db.run("PRAGMA foreign_keys = ON");
 
+        //skapa users-tabellen
         db.run(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +23,27 @@ const db = new sqlite3.Database("./timetotalk.db", (err) => {
                 console.error("Kunde inte skapa tabellen:", err.message);
             } else {
                 console.log("Tabellen 'users' är skapad eller finns redan.");
+            }
+        });
+
+        //skapa available_times-tabellen
+        db.run(`
+            CREATE TABLE IF NOT EXISTS available_times (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                teacher_id INTEGER NOT NULL,
+                date TEXT NOT NULL,
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
+                activity TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'available',
+                FOREIGN KEY (teacher_id) REFERENCES users (id)
+            
+            )
+        `, (err) => {
+            if (err) {
+                console.error("Kunde inte skapa available_times-tabellen:", err.message);
+            } else {
+                console.log("Tabellen 'available_times' är skapad eller finns redan.");
             }
         });
     }
