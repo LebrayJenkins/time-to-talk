@@ -175,8 +175,8 @@ function createBooking(availableTimeId, studentId, callback) {
         }
 
         const sql = `
-            INSERT INTO bookings (available_time_id, student_id)
-            VALUES (?, ?)
+            INSERT INTO bookings (available_time_id, student_id, status)
+            VALUES (?, ?, 'bokad')
         `;
 
         db.run(sql, [availableTimeId, studentId], function (err) {
@@ -290,6 +290,35 @@ function cancelBooking(bookingId, callback) {
     });
 }
 
+function getBookingsForTeacher(teacherId, callback) {
+    const sql = `
+        SELECT
+            bookings.id,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            users.name AS student_name
+        FROM bookings
+        JOIN available_times
+            ON bookings.available_time_id = available_times.id
+        JOIN users
+            ON bookings.student_id = users.id
+        WHERE available_times.teacher_id = ?
+          AND bookings.status = 'bokad'
+        ORDER BY available_times.date, available_times.start_time
+    `;
+
+    db.all(sql, [teacherId], (err, rows) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null, rows);
+    });
+}
+
 module.exports = {
     db,
     createUser,
@@ -297,5 +326,6 @@ module.exports = {
     getAvailableTimes,
     createBooking,
     getBookingsForStudent,
-    cancelBooking
+    cancelBooking,
+    getBookingsForTeacher
 };
