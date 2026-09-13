@@ -46,7 +46,27 @@ const db = new sqlite3.Database("./timetotalk.db", (err) => {
                 console.log("Tabellen 'available_times' är skapad eller finns redan.");
             }
         });
+
+        //skapa bookings-tabellen
+        db.run(`
+            CREATE TABLE IF NOT EXISTS bookings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,   
+                available_time_id INTEGER NOT NULL,
+                student_id INTEGER NOT NULL,
+                status TEXT NOT NULL DEFAULT 'booked',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (available_time_id) REFERENCES available_times (id),
+                FOREIGN KEY (student_id) REFERENCES users (id)
+            )
+        `, (err) => {
+            if (err) {
+                console.error("Kunde inte skapa bookings-tabellen:", err.message);
+            } else {
+                console.log("Tabellen 'bookings' är skapad eller finns redan.");
+            }
+
+        });
     }
-});
+});        
 
 module.exports = db;
