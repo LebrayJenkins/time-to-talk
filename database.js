@@ -349,6 +349,49 @@ function getTeacherTimes(teacherId, callback) {
     });
 }
 
+function updateAvailableTime(
+    timeId,
+    date,
+    startTime,
+    endTime,
+    activity,
+    callback
+) {
+    const sql = `
+        UPDATE available_times
+        SET
+            date = ?,
+            start_time = ?,
+            end_time = ?,
+            activity = ?
+        WHERE id = ?
+    `;
+
+    db.run(
+        sql,
+        [date, startTime, endTime, activity, timeId],
+        function (err) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            if (this.changes === 0) {
+                callback(new Error("Tiden finns inte."));
+                return;
+            }
+
+            callback(null, {
+                id: timeId,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                activity: activity
+            });
+        }
+    );
+}
+
 module.exports = {
     db,
     createUser,
@@ -358,5 +401,6 @@ module.exports = {
     getBookingsForStudent,
     cancelBooking,
     getBookingsForTeacher,
-    getTeacherTimes
+    getTeacherTimes,
+    updateAvailableTime
 };
