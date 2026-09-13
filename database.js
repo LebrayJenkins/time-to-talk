@@ -89,7 +89,45 @@ function createUser(name, email, password, role, callback) {
         });
     });
 }
+
+function createAvailableTime(
+    teacherId,
+    date,
+    startTime,
+    endTime,
+    activity,
+    callback
+) {
+    const sql = `
+        INSERT INTO available_times
+        (teacher_id, date, start_time, end_time, activity)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.run(
+        sql,
+        [teacherId, date, startTime, endTime, activity],
+        function (err) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, {
+                id: this.lastID,
+                teacherId: teacherId,
+                date: date,
+                startTime: startTime,
+                endTime: endTime,
+                activity: activity,
+                status: "available"
+            });
+        }
+    );
+}
+
 module.exports = {
     db,
-    createUser
+    createUser,
+    createAvailableTime
 };
