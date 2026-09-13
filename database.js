@@ -126,8 +126,33 @@ function createAvailableTime(
     );
 }
 
+function getAvailableTimes(callback) {
+    const sql = `
+        SELECT
+            available_times.id,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            users.name AS teacher_name
+        FROM available_times
+        JOIN users ON available_times.teacher_id = users.id
+        WHERE available_times.status = 'available'
+        ORDER BY available_times.date, available_times.start_time
+    `;
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null, rows);
+    });
+}
 module.exports = {
     db,
     createUser,
-    createAvailableTime
+    createAvailableTime,
+    getAvailableTimes
 };
