@@ -69,4 +69,27 @@ const db = new sqlite3.Database("./timetotalk.db", (err) => {
     }
 });        
 
-module.exports = db;
+function createUser(name, email, password, role, callback) {
+        const sql = `
+        INSERT INTO users (name, email, password, role)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.run(sql, [name, email, password, role], function (err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null, {
+            id: this.lastID,
+            name: name,
+            email: email,
+            role: role
+        });
+    });
+}
+module.exports = {
+    db,
+    createUser
+};
