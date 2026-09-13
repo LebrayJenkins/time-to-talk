@@ -90,6 +90,28 @@ function createUser(name, email, password, role, callback) {
     });
 }
 
+function getUserByEmail(email, callback) {
+    const sql = `
+        SELECT id, name, email, password, role
+        FROM users
+        WHERE email = ?
+    `;
+
+    db.get(sql, [email], (err, user) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (!user) {
+            callback(new Error("Användaren finns inte."));
+            return;
+        }
+
+        callback(null, user);
+    });
+}
+
 function createAvailableTime(
     teacherId,
     date,
@@ -484,6 +506,7 @@ function getBookingDetails(bookingId, callback) {
 module.exports = {
     db,
     createUser,
+    getUserByEmail,
     createAvailableTime,
     getAvailableTimes,
     createBooking,
