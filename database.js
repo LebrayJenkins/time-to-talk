@@ -319,6 +319,36 @@ function getBookingsForTeacher(teacherId, callback) {
     });
 }
 
+function getTeacherTimes(teacherId, callback) {
+    const sql = `
+        SELECT
+            available_times.id,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            available_times.status,
+            users.name AS student_name
+        FROM available_times
+        LEFT JOIN bookings
+            ON available_times.id = bookings.available_time_id
+            AND bookings.status = 'bokad'
+        LEFT JOIN users
+            ON bookings.student_id = users.id
+        WHERE available_times.teacher_id = ?
+        ORDER BY available_times.date, available_times.start_time
+    `;
+
+    db.all(sql, [teacherId], (err, rows) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null, rows);
+    });
+}
+
 module.exports = {
     db,
     createUser,
@@ -327,5 +357,6 @@ module.exports = {
     createBooking,
     getBookingsForStudent,
     cancelBooking,
-    getBookingsForTeacher
+    getBookingsForTeacher,
+    getTeacherTimes
 };
