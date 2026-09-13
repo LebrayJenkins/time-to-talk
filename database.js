@@ -237,11 +237,65 @@ function getBookingsForStudent(studentId, callback) {
     });
 }
 
+function cancelBooking(bookingId, callback) {
+    const sql = `
+        SELECT available_time_id
+        FROM bookings
+        WHERE id = ?
+          AND status = 'bokad'
+    `;
+
+    db.get(sql, [bookingId], (err, booking) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (!booking) {
+            callback(new Error("Bokningen finns inte eller är redan avbokad."));
+            return;
+        }
+
+        db.run(
+            `UPDATE bookings
+             SET status = 'avbokad'
+             WHERE id = ?`,
+            [bookingId],
+            (updateErr) => {
+                if (updateErr) {
+                    callback(updateErr);
+                    return;
+                }
+
+                db.run(
+                    `UPDATE available_times
+                     SET status = 'tillgänglig'
+                     WHERE id = ?`,
+                    [booking.available_time_id],
+                    (timeErr) => {
+                        if (timeErr) {
+                            callback(timeErr);
+                            return;
+                        }
+
+                        callback(null, {
+                            bookingId: bookingId,
+                            status: "avbokad",
+                            availableTimeId: booking.available_time_id
+                        });
+                    }
+                );
+            }
+        );
+    });
+}
+
 module.exports = {
     db,
     createUser,
     createAvailableTime,
     getAvailableTimes,
     createBooking,
-    getBookingsForStudent
+    getBookingsForStudent,
+    cancelBooking
 };
