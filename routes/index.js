@@ -8,4 +8,16 @@ router.get("/", (req, res) => {
   });
 });
 
+router.get("/teacher/tider/skapa", (req, res) => {
+    res.render("teacher-create-time");
+});
+
+router.post("/teacher/tider/skapa", (req, res) => {
+    const activity = req.body.activity;
+
+    console.log("Vald aktivitet:", activity);
+
+    res.send(`Aktivitet mottagen: ${activity}`);
+});
+
 module.exports = router;

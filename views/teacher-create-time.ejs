@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skapa ny tid - Time To Talk</title>
+</head>
+
+<body>
+
+    <main>
+        <h1>Skapa ny tid</h1>
+
+        <form action="/teacher/tider/skapa" method="POST">
+
+            <label for="activity">Välj aktivitet</label>
+
+            <select id="activity" name="activity" required>
+                <option value="">Välj aktivitet</option>
+                <option value="Handledning">Handledning</option>
+                <option value="Presentation">Presentation</option>
+                <option value="Muntligt förhör">Muntligt förhör</option>
+            </select>
+
+            <button type="submit">Publicera tid</button>
+
+        </form>
+    </main>
+
+</body>
+</html>
