@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logga in – Time To Talk</title>
+    <link rel="stylesheet" href="/stylesheets/auth.css">
+</head>
+<body>
+
+    <main class="auth-container">
+        
+        <!-- Logotyp och Namn -->
+        <header class="auth-brand">
+            <img src="https://www.freeiconspng.com/thumbs/message-icon-png/message-icon-png-15.png" alt="Time To Talk Logo" class="auth-logo-img">
+            <h1 class="auth-title">Time To Talk</h1>
+        </header>
+
+        <p class="auth-subtitle">Boka och hantera handledartider enkelt.</p>
+
+        <!-- Roll-väljare (Elev / Lärare) -->
+        <div class="role-selector" role="group" aria-label="Välj användarroll">
+            <a href="/login?role=student" class="role-btn <%= role === 'student' ? 'active' : '' %>" id="role-student">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <span>ELEV</span>
+            </a>
+            <a href="/login?role=teacher" class="role-btn <%= role !== 'student' ? 'active' : '' %>" id="role-teacher">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+                <span>LÄRARE</span>
+            </a>
+        </div>
+
+        <!-- Tydligt Felmeddelande -->
+        <% if (error) { %>
+            <div class="alert-error" role="alert" id="error-message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <span><%= error %></span>
+            </div>
+        <% } %>
+
+        <!-- Inloggningsformulär -->
+        <form action="/login" method="POST" novalidate>
+            <input type="hidden" name="role" value="<%= role || 'teacher' %>">
+
+            <div class="form-field">
+                <label for="email" class="field-label">E-post</label>
+                <div class="input-with-icon">
+                    <span class="input-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </span>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="namn@skola.se" 
+                        value="<%= email || '' %>" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="password" class="field-label">Lösenord</label>
+                <div class="input-with-icon">
+                    <span class="input-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                    </span>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login" id="login-submit">
+                Logga in
+            </button>
+
+            <div class="auth-footer">
+                <div style="margin-bottom: 12px;">
+                    <span style="font-size: 14px; color: #555;">Inget konto än?</span>
+                    <a href="/register" class="auth-link" style="margin-left: 6px; font-weight: bold;">Skapa konto här</a>
+                </div>
+                <a href="#" class="auth-link" style="font-size: 13px; color: #777;" onclick="alert('Kontakta administratören för att återställa lösenordet.'); return false;">Glömt lösenord?</a>
+                <div>
+                    <a href="/" class="auth-back">← Tillbaka till startsidan</a>
+                </div>
+            </div>
+        </form>
+
+    </main>
+
+</body>
+</html>
