@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skapa ny tid - Time To Talk</title>
+
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/teacher-create-time.css">
+    
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- Vänstersidomeny -->
+        <%- include("partials/sidebar") %>
+
+
+        <!-- Huvudinnehåll -->
+        <main class="main-content">
+
+            <div class="content-wrapper">
+
+                <div class="site-title">
+                    Time To Talk
+                </div>
+
+                <h1>Skapa ny tid</h1>
+
+
+                <form action="/teacher/tider/skapa" method="POST">
+
+                    <!-- Aktivitet -->
+                    <div class="form-group">
+                        <label for="activity">Välj aktivitet</label>
+
+                        <div class="select-wrapper">
+                            <select id="activity" name="activity" required>
+                                <option value="">Välj aktivitet</option>
+                                <option value="Handledning">Handledning</option>
+                                <option value="Presentation">Presentation</option>
+                                <option value="Muntligt förhör">Muntligt förhör</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <!-- Datum -->
+                    <div class="form-group">
+                        <label for="date">Datum</label>
+
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            min="<%= new Date().toISOString().split('T')[0] %>"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- Tid -->
+                    <div class="form-group">
+                        <label>Tid</label>
+
+                        <div class="time-fields">
+
+                            <div class="time-wrapper">
+                                <input
+                                    type="time"
+                                    id="start_time"
+                                    name="start_time"
+                                    required
+                                >
+                            </div>
+
+                            <div class="time-wrapper">
+                                <input
+                                    type="time"
+                                    id="end_time"
+                                    name="end_time"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Knappar -->
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="button button-cancel"
+                            onclick="history.back()"
+                        >
+                            Avbryt
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="button button-submit"
+                        >
+                            Publicera tid
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

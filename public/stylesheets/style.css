@@ -70,3 +70,48 @@ textarea:focus-visible {
         animation-duration: 0.01ms !important;
     }
 }
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 193px;
+    min-height: 100vh;
+    background: #777777;
+    position: relative;
+    padding: 42px 33px;
+}
+
+.logo-placeholder {
+    width: 114px;
+    height: 88px;
+    background: #eeeeee;
+    margin-bottom: 102px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 29px;
+}
+
+.nav-placeholder {
+    width: 126px;
+    height: 23px;
+    background: #eeeeee;
+}
+
+.logout {
+    position: absolute;
+    bottom: 25px;
+    left: 34px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.logout-icon {
+    font-size: 27px;
+    line-height: 1;
+}
