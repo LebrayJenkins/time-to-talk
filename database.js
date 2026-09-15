@@ -1,6 +1,8 @@
+const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database("./timetotalk.db", (err) => {
+const dbPath = path.join(__dirname, "timetotalk.db");
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error("Kunde inte öppna databasen:", err.message);
     } else {
@@ -63,11 +65,27 @@ const db = new sqlite3.Database("./timetotalk.db", (err) => {
                 console.error("Kunde inte skapa bookings-tabellen:", err.message);
             } else {
                 console.log("Tabellen 'bookings' är skapad eller finns redan.");
+                seedInitialData(db);
             }
 
         });
     }
 });        
+
+function seedInitialData(database) {
+    // Skapar endast initiala standardkonton om users-tabellen är helt tom
+    database.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
+        if (!err && row && row.count === 0) {
+            console.log("Databasen är tom. Skapar grundanvändare...");
+            database.run(
+                `INSERT INTO users (name, email, password, role) VALUES 
+                ('Sara Svensson', 'sara@timetotalk.se', 'larare123', 'teacher'),
+                ('Martin Lindgren', 'martin@timetotalk.se', 'larare123', 'teacher'),
+                ('Mårten Larsson', 'marten@skola.se', 'elev123', 'student')`
+            );
+        }
+    });
+}
 
 function createUser(name, email, password, role, callback) {
         const sql = `
@@ -90,14 +108,36 @@ function createUser(name, email, password, role, callback) {
     });
 }
 
+function createUser(name, email, password, role, callback) {
+    const sql = `
+        INSERT INTO users (name, email, password, role)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.run(sql, [name.trim(), email.trim().toLowerCase(), password, role], function (err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        callback(null, {
+            id: this.lastID,
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
+            role: role
+        });
+    });
+}
+
 function getUserByEmail(email, callback) {
+    const cleanEmail = (email || "").trim().toLowerCase();
     const sql = `
         SELECT id, name, email, password, role
         FROM users
-        WHERE email = ?
+        WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))
     `;
 
-    db.get(sql, [email], (err, user) => {
+    db.get(sql, [cleanEmail], (err, user) => {
         if (err) {
             callback(err);
             return;
@@ -503,10 +543,21 @@ function getBookingDetails(bookingId, callback) {
     });
 }
 
+function deleteUser(id, callback) {
+    db.run("DELETE FROM users WHERE id = ?", [id], function (err) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, { deletedId: id, changes: this.changes });
+    });
+}
+
 module.exports = {
     db,
     createUser,
     getUserByEmail,
+    deleteUser,
     createAvailableTime,
     getAvailableTimes,
     createBooking,
