@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="sv">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skapa ny tid - Time To Talk</title>
 
-    <link rel="stylesheet" href="/stylesheets/style.css">
-    <link rel="stylesheet" href="/stylesheets/teacher-create-time.css">
-    
-</head>
+<%- include("partials/head", {
+        title: "Skapa ny tid",
+        pageStylesheet: "/stylesheets/teacher-create-time.css"
+}) %>
+
 
 <body>
 
@@ -17,70 +14,82 @@
         <!-- Vänstersidomeny -->
         <%- include("partials/sidebar") %>
 
-
         <!-- Huvudinnehåll -->
         <main class="main-content">
 
             <div class="content-wrapper">
 
-                <div class="site-title">
-                    Time To Talk
-                </div>
-
                 <h1>Skapa ny tid</h1>
-
 
                 <form action="/teacher/tider/skapa" method="POST">
 
                     <!-- Aktivitet -->
-                    <div class="form-group">
-                        <label for="activity">Välj aktivitet</label>
+                    <div class="mb-4">
+                        <label for="activity" class="form-label">
+                            Välj aktivitet
+                        </label>
 
-                        <div class="select-wrapper">
-                            <select id="activity" name="activity" required>
-                                <option value="">Välj aktivitet</option>
-                                <option value="Handledning">Handledning</option>
-                                <option value="Presentation">Presentation</option>
-                                <option value="Muntligt förhör">Muntligt förhör</option>
-                            </select>
-                        </div>
+                        <select
+                            id="activity"
+                            name="activity"
+                            class="form-select"
+                            required
+                        >
+                            <option value="">Välj aktivitet</option>
+                            <option value="Handledning">Handledning</option>
+                            <option value="Redovisning">Redovisning</option>
+                            <option value="Muntligt förhör">Muntligt förhör</option>
+                        </select>
                     </div>
 
-
                     <!-- Datum -->
-                    <div class="form-group">
-                        <label for="date">Datum</label>
+                    <div class="mb-4">
+                        <label for="date" class="form-label">
+                            Datum
+                        </label>
 
                         <input
                             type="date"
                             id="date"
                             name="date"
+                            class="form-control"
                             min="<%= new Date().toISOString().split('T')[0] %>"
                             required
                         >
                     </div>
 
-
                     <!-- Tid -->
-                    <div class="form-group">
-                        <label>Tid</label>
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Tid
+                        </label>
 
-                        <div class="time-fields">
+                        <div class="row g-3">
 
-                            <div class="time-wrapper">
+                            <div class="col-12 col-sm-6">
+                                <label for="start_time" class="form-label">
+                                    Starttid
+                                </label>
+
                                 <input
                                     type="time"
                                     id="start_time"
                                     name="start_time"
+                                    class="form-control"
                                     required
                                 >
                             </div>
 
-                            <div class="time-wrapper">
+                            <div class="col-12 col-sm-6">
+                                <label for="end_time" class="form-label">
+                                    Sluttid
+                                </label>
+
                                 <input
                                     type="time"
                                     id="end_time"
                                     name="end_time"
+                                    class="form-control"
                                     required
                                 >
                             </div>
@@ -88,13 +97,12 @@
                         </div>
                     </div>
 
-
                     <!-- Knappar -->
-                    <div class="form-actions">
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end mt-4">
 
                         <button
                             type="button"
-                            class="button button-cancel"
+                            class="btn button-cancel"
                             onclick="history.back()"
                         >
                             Avbryt
@@ -102,7 +110,7 @@
 
                         <button
                             type="submit"
-                            class="button button-submit"
+                            class="btn button-submit"
                         >
                             Publicera tid
                         </button>
