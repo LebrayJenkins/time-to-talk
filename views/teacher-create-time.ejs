@@ -3,11 +3,32 @@
 
 <%- include("partials/head", {
         title: "Skapa ny tid",
-        pageStylesheet: "/stylesheets/teacher-create-time.css"
+        pageStylesheets: [
+            "/stylesheets/teacher-create-time.css",
+            "/stylesheets/teacher-sidebar.css",
+            "/stylesheets/logo.css"
+        ]
 }) %>
 
 
 <body>
+    <!-- Mobilheader med menyknapp -->
+    <header class="mobile-header">
+        <button
+            type="button"
+            class="btn btn-outline-dark mobile-menu-button d-md-none"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#teacher-mobile-menu"
+            aria-controls="teacher-mobile-menu"
+            aria-label="Öppna meny">
+            <span aria-hidden="true">☰</span>
+        </button>
+    </header>
+
+      <!-- Logotyp som hero på mobil -->
+    <div class="mobile-logo-hero">
+        <%- include("partials/logo") %>
+    </div>
 
     <div class="page">
 
@@ -98,7 +119,7 @@
                     </div>
 
                     <!-- Knappar -->
-                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-end mt-4">
+                    <div class="d-flex flex-row gap-3 justify-content-center mt-4">
 
                         <button
                             type="button"
@@ -124,6 +145,6 @@
         </main>
 
     </div>
-
+    <%- include("partials/scripts") %>
 </body>
 </html>
