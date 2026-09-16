@@ -1,0 +1,78 @@
+/* LÄRARMENY: MOBIL OCH DESKTOP */
+
+.teacher-sidebar {
+    --bs-offcanvas-width: 300px;
+    max-width: 100%;
+    color: #212529;
+}
+
+.teacher-sidebar .offcanvas-body {
+    gap: 24px;
+}
+
+.teacher-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px;
+    color: #212529;
+}
+
+.teacher-sidebar .nav-link:hover {
+    background-color: #eeeeee;
+}
+
+.teacher-sidebar .btn-close {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+}
+
+.teacher-sidebar a:focus-visible,
+.teacher-sidebar button:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+    .teacher-sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 193px;
+        flex-shrink: 0;
+        align-self: stretch;
+        background-color: #777777;
+    }
+
+    .teacher-sidebar .offcanvas-body {
+        flex-grow: 1;
+        flex-direction: column;
+        padding: 32px 16px;
+    }
+
+    .teacher-sidebar-logo {
+        width: 114px;
+        height: 88px;
+        margin: 0 auto 40px;
+        background-color: #eeeeee;
+    }
+
+    .teacher-sidebar .nav-link {
+        background-color: #eeeeee;
+    }
+
+    .teacher-sidebar .nav-link:hover {
+        background-color: #dddddd;
+    }
+
+    .teacher-sidebar a:focus-visible,
+    .teacher-sidebar button:focus-visible {
+        outline-color: #ffffff;
+    }
+}
+
+.teacher-sidebar .nav-link:hover,
+.teacher-sidebar .nav-link:focus-visible {
+    background-color: #212529;
+    color: #ffffff;
+}

@@ -13,8 +13,12 @@
     <!-- Gemensam CSS för alla sidor -->
     <link rel="stylesheet" href="/stylesheets/style.css">
 
-    <!-- Extra CSS när sidan skickar med en egen CSS-fil -->
-    <% if (typeof pageStylesheet !=="undefined" ) { %>
+   <!-- Extra CSS för sidan -->
+    <% if (typeof pageStylesheets !== "undefined") { %>
+        <% pageStylesheets.forEach(function(stylesheet) { %>
+            <link rel="stylesheet" href="<%= stylesheet %>">
+        <% }) %>
+    <% } else if (typeof pageStylesheet !== "undefined") { %>
         <link rel="stylesheet" href="<%= pageStylesheet %>">
-        <% } %>
+    <% } %>
 </head>
