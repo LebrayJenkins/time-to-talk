@@ -74,11 +74,24 @@ textarea:focus-visible {
     }
 }
 
+/* GEMENSAM SIDLAYOUT */
+
+.page {
+    min-height: 100vh;
+    display: flex;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
 /* BEFINTLIG SIDOMENY */
 
 .sidebar {
     width: 193px;
     min-height: 100vh;
+    flex-shrink: 0;
     background: #777777;
     position: relative;
     padding: 42px 33px;
