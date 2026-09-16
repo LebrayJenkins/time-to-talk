@@ -1,0 +1,122 @@
+/* Lärarmeny - desktop och mobil */
+
+
+/* ===== Grund ===== */
+
+.teacher-sidebar {
+    --bs-offcanvas-width: 240px;
+    --bs-offcanvas-bg: #4a4a4a;
+    max-width: 100%;
+    color: #ffffff;
+    background-color: #4a4a4a !important;
+}
+
+.teacher-sidebar .offcanvas-body {
+    background-color: #4a4a4a;
+}
+
+/* ===== Meny ===== */
+
+.teacher-sidebar .offcanvas-body {
+    gap: 24px;
+}
+
+.teacher-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px;
+    color: #ffffff;
+}
+
+.teacher-sidebar .nav-link:hover {
+    background-color: #5f5f5f;
+    color: #ffffff;
+}
+
+.teacher-sidebar .btn-close {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+}
+
+.teacher-sidebar a:focus-visible,
+.teacher-sidebar button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+}
+
+
+/* ===== Desktop ===== */
+
+@media (min-width: 768px) {
+
+    .teacher-sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 240px;
+        flex-shrink: 0;
+        align-self: stretch;
+        background-color: #4a4a4a;
+    }
+
+    .teacher-sidebar .offcanvas-body {
+        flex-grow: 1;
+        flex-direction: column;
+        padding: 32px 16px;
+    }
+
+    .teacher-sidebar-logo {
+        width: 100%;
+        margin: 0 auto 40px;
+    }
+
+    .teacher-sidebar .nav-link {
+        background-color: transparent;
+    }
+
+    .teacher-sidebar .nav-link:hover,
+    .teacher-sidebar .nav-link:focus-visible {
+        background-color: #5f5f5f;
+        color: #ffffff;
+    }
+
+    .teacher-sidebar .btn-outline-dark {
+        margin-top: auto;
+        color: #ffffff;
+        border-color: #ffffff;
+    }
+
+    .teacher-sidebar .btn-outline-dark:hover {
+        background-color: #ffffff;
+        color: #4a4a4a;
+    }
+}
+
+
+/* ===== Mobil ===== */
+
+@media (max-width: 767.98px) {
+
+    .teacher-sidebar {
+        --bs-offcanvas-width: 280px;
+    }
+
+    .teacher-sidebar .offcanvas-body {
+        gap: 24px;
+        padding: 24px 16px;
+    }
+
+    .teacher-sidebar {
+        background-color: #4a4a4a;
+    }
+
+    .teacher-sidebar .nav-link {
+        color: #ffffff;
+    }
+
+    .teacher-sidebar .btn-outline-dark {
+        color: #ffffff;
+        border-color: #ffffff;
+    }
+}

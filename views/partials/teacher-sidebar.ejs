@@ -1,0 +1,54 @@
+<!-- Lärarmeny: utfällbar på mobil och synlig på desktop -->
+<aside
+    class="offcanvas-md offcanvas-start teacher-sidebar"
+    tabindex="-1"
+    id="teacher-mobile-menu"
+    aria-labelledby="teacher-menu-heading"
+>
+
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5" id="teacher-menu-heading">
+            Lärarmeny
+        </h2>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            data-bs-target="#teacher-mobile-menu"
+            aria-label="Stäng meny">
+        </button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+
+        <!-- Logotypens plats på desktop -->
+        <div class="teacher-sidebar-logo d-none d-md-block">
+             <%- include("logo") %>
+        </div>
+
+        <nav class="nav flex-column gap-2" aria-label="Lärarmeny">
+
+            <a class="nav-link" href="#"> <!--länka rätt när den är klar-->
+                Min översikt
+            </a>
+
+            <a class="nav-link" href="#"> <!--länka rätt när den är klar-->
+                Mina bokningar
+            </a>
+
+            <a class="nav-link" href="/teacher/tider/skapa">
+                Skapa tider
+            </a>
+
+        </nav>
+
+        <button
+            type="button"
+            class="btn btn-outline-dark mt-auto">
+            Logga ut
+        </button>
+
+    </div>
+
+</aside>

@@ -1,37 +1,56 @@
 /* Teacher - skapa ny tid */
 
-/* Placering av sidans innehåll */
+
+/* ===== Sidlayout ===== */
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    background-color: #f8f9fa;
+}
+
 .main-content {
-    padding-top: 30px;
-} 
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 70px 48px;
+    background-color: #f8f9fa;
+}
 
 .content-wrapper {
-    width: 423px;
-    margin-left: 47px;
+    width: 100%;
+    max-width: 500px;
 }
 
-/* Formulärets bredd */
+.main-content form > .d-flex {
+    justify-content: center !important;
+}
+
+/* ===== Formulär ===== */
+
 form {
-    width: 302px;
+    width: 100%;
 }
 
-/* Knappar */
+
+/* ===== Knappar ===== */
+
 .button-cancel,
 .button-submit {
-    height: 36px;
+    height: 40px;
+    min-width: 140px;
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: 700;
 }
 
 .button-cancel {
-    width: 146px;
     background: #f1f1f1;
     color: #111111;
 }
 
 .button-submit {
-    width: 146px;
     background: #666666;
     color: #ffffff;
 }
@@ -39,4 +58,35 @@ form {
 .button-cancel:hover,
 .button-submit:hover {
     opacity: 0.85;
+}
+
+
+/* ===== Mobil ===== */
+
+@media (max-width: 767.98px) {
+
+    .page {
+        min-height: auto;
+        display: block;
+    }
+
+    .main-content {
+        padding: 24px 20px 40px;
+    }
+
+    .content-wrapper {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .button-cancel,
+    .button-submit {
+        flex: 1;
+        min-width: 0;
+    }
 }
