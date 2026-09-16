@@ -1,0 +1,42 @@
+<!-- Elevmeny: utfällbar på mobil och synlig på desktop -->
+<aside class="offcanvas-md offcanvas-start student-sidebar" tabindex="-1" id="student-mobile-menu"
+    aria-labelledby="student-menu-heading">
+
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title h5" id="student-menu-heading">
+            Elevmeny
+        </h2>
+
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#student-mobile-menu"
+            aria-label="Stäng meny"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+
+        <!-- Logotypens plats på desktop -->
+        <div class="student-sidebar-logo d-none d-md-block" aria-hidden="true"></div>
+
+        <nav class="nav flex-column gap-2" aria-label="Elevmeny">
+
+            <a class="nav-link" href="/student-dashboard">
+                Min översikt
+            </a>
+
+            <a class="nav-link" href="/student-dashboard#bookings-heading">
+                Mina bokningar
+            </a>
+
+            <a class="nav-link" href="/student-dashboard#actions-heading">
+                Boka tid
+            </a>
+
+        </nav>
+
+        <!-- Kopplas till riktig utloggning senare -->
+        <button type="button" class="btn btn-outline-dark mt-auto">
+            Logga ut
+        </button>
+
+    </div>
+
+</aside>

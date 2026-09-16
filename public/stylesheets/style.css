@@ -37,6 +37,7 @@ body {
     min-height: 44px;
 }
 
+/* Fokusmarkering för tangentbordsnavigering */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -46,6 +47,7 @@ textarea:focus-visible {
     outline-offset: 3px;
 }
 
+/* Hoppa direkt till sidans huvudinnehåll */
 .skip-link {
     position: absolute;
     top: -100px;
@@ -60,6 +62,7 @@ textarea:focus-visible {
     top: 16px;
 }
 
+/* Respektera inställningen för minskad rörelse */
 @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -71,7 +74,7 @@ textarea:focus-visible {
     }
 }
 
-/* SIDEBAR */
+/* BEFINTLIG SIDOMENY */
 
 .sidebar {
     width: 193px;
@@ -114,4 +117,87 @@ textarea:focus-visible {
 .logout-icon {
     font-size: 27px;
     line-height: 1;
+}
+
+/* ELEVMENY: MOBIL OCH DESKTOP */
+
+.student-sidebar {
+    --bs-offcanvas-width: 300px;
+    max-width: 100%;
+    color: #212529;
+}
+
+.student-sidebar .offcanvas-body {
+    gap: 24px;
+}
+
+.student-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 12px;
+    color: #212529;
+}
+
+.student-sidebar .nav-link:hover {
+    background-color: #eeeeee;
+}
+
+.student-sidebar .btn-close {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+}
+
+/* Mörk fokusmarkering mot mobilmenyns vita bakgrund */
+.student-sidebar a:focus-visible,
+.student-sidebar button:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+/* Elevmeny på desktop */
+@media (min-width: 768px) {
+    .student-sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 193px;
+        flex-shrink: 0;
+        align-self: stretch;
+        background-color: #777777;
+    }
+
+    .student-sidebar .offcanvas-body {
+        flex-grow: 1;
+        flex-direction: column;
+        padding: 32px 16px;
+    }
+
+    .student-sidebar-logo {
+        width: 114px;
+        height: 88px;
+        margin: 0 auto 40px;
+        background-color: #eeeeee;
+    }
+
+    .student-sidebar .nav-link {
+        background-color: #eeeeee;
+    }
+
+    .student-sidebar .nav-link:hover {
+        background-color: #dddddd;
+    }
+
+    /* Ljus fokusmarkering mot den grå sidomenyn */
+    .student-sidebar a:focus-visible,
+    .student-sidebar button:focus-visible {
+        outline-color: #ffffff;
+    }
+}
+
+/* Tydlig markering med mus och tangentbord */
+.student-sidebar .nav-link:hover,
+.student-sidebar .nav-link:focus-visible {
+    background-color: #212529;
+    color: #ffffff;
 }

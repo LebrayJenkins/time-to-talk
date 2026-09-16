@@ -1,0 +1,125 @@
+/* Grund för elevens dashboard */
+.student-dashboard {
+    background-color: #ffffff;
+}
+
+.student-dashboard .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.student-dashboard .dashboard-main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 16px;
+}
+
+/* Mobil: centrerad text och menyknapp till vänster */
+.student-dashboard .dashboard-header {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 32px;
+}
+
+.student-dashboard .dashboard-brand {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.student-dashboard .dashboard-menu-button {
+    grid-column: 1;
+    grid-row: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+.student-dashboard .dashboard-menu-button:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+/* Kommande bokningar */
+.student-dashboard .dashboard-bookings {
+    max-width: 520px;
+    padding: 20px;
+    background-color: #eeeeee;
+}
+
+.student-dashboard .booking-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 10px;
+    background-color: #d9d9d9;
+}
+
+.student-dashboard .booking-date strong {
+    font-size: 1.5rem;
+}
+
+.student-dashboard .booking-information {
+    flex: 1;
+    min-width: 120px;
+}
+
+.student-dashboard .booking-information p {
+    margin-bottom: 4px;
+}
+
+/* Bokningsalternativ */
+.student-dashboard .dashboard-actions {
+    max-width: 520px;
+}
+
+.student-dashboard .dashboard-action {
+    padding: 20px 10px;
+    background-color: #f1f1f1;
+}
+
+.student-dashboard .action-symbol {
+    width: 56px;
+    height: 56px;
+    background-color: #d9d9d9;
+    font-size: 1.75rem;
+}
+
+.student-dashboard .dashboard-action .btn {
+    white-space: normal;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .student-dashboard .dashboard-layout {
+        border-top: 32px solid #d9d9d9;
+        min-height: 100vh;
+    }
+
+    .student-dashboard .dashboard-main {
+        padding: 24px 40px;
+    }
+
+    .student-dashboard .dashboard-header {
+        display: block;
+        min-height: auto;
+    }
+
+    .student-dashboard .dashboard-brand {
+        max-width: 350px;
+        background-color: #d9d9d9;
+    }
+
+    .student-dashboard .dashboard-action {
+        min-height: 200px;
+        padding: 24px;
+    }
+}

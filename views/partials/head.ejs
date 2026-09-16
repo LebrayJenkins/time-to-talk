@@ -7,7 +7,14 @@
         <%= title %> – TimeToTalk
     </title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Gemensam CSS för alla sidor -->
     <link rel="stylesheet" href="/stylesheets/style.css">
+
+    <!-- Extra CSS när sidan skickar med en egen CSS-fil -->
+    <% if (typeof pageStylesheet !=="undefined" ) { %>
+        <link rel="stylesheet" href="<%= pageStylesheet %>">
+        <% } %>
 </head>
