@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logga in – Time To Talk</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/auth.css">
+    <link rel="stylesheet" href="/stylesheets/logo.css">
 </head>
 <body>
 
     <main class="auth-container">
         
         <!-- Logotyp och Namn -->
-        <header class="auth-brand">
-            <img src="https://www.freeiconspng.com/thumbs/message-icon-png/message-icon-png-15.png" alt="Time To Talk Logo" class="auth-logo-img">
-            <h1 class="auth-title">Time To Talk</h1>
-        </header>
+        <%- include("partials/logo") %>
 
         <p class="auth-subtitle">Boka och hantera handledartider enkelt.</p>
 
@@ -97,9 +96,6 @@
                     <a href="/register" class="auth-link" style="margin-left: 6px; font-weight: bold;">Skapa konto här</a>
                 </div>
                 <a href="#" class="auth-link" style="font-size: 13px; color: #777;" onclick="alert('Kontakta administratören för att återställa lösenordet.'); return false;">Glömt lösenord?</a>
-                <div>
-                    <a href="/" class="auth-back">← Tillbaka till startsidan</a>
-                </div>
             </div>
         </form>
 

@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skapa konto – Time To Talk</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/auth.css">
+    <link rel="stylesheet" href="/stylesheets/logo.css">
 </head>
 <body>
 
     <main class="auth-container">
         
         <!-- Logotyp och Namn -->
-        <header class="auth-brand">
-            <div class="auth-logo-box" aria-hidden="true"></div>
-            <h1 class="auth-title">Time To Talk</h1>
-        </header>
+        <%- include("partials/logo") %>
 
         <p class="auth-subtitle">Skapa ett konto för att använda systemet.</p>
 
@@ -109,9 +108,6 @@
             <div class="auth-footer">
                 <span style="font-size: 14px; color: #555;">Har du redan ett konto?</span>
                 <a href="/login" class="auth-link" style="margin-left: 6px; font-weight: bold;">Logga in här</a>
-                <div>
-                    <a href="/" class="auth-back">← Tillbaka till startsidan</a>
-                </div>
             </div>
         </form>
 
