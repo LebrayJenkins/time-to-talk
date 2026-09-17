@@ -218,4 +218,19 @@ router.get("/student-dashboard", (req, res) => {
   });
 });
 
+/* GET: Visa elevens lediga tider */
+router.get("/student/lediga-tider", (req, res) => {
+  db.getAvailableTimes((err, availableTimes) => {
+    if (err) {
+      console.error("Fel vid hämtning av lediga tider:", err.message);
+      return res.status(500).send("Kunde inte hämta lediga tider.");
+    }
+
+    res.render("student-available-times", {
+      title: "Välj datum och tid",
+      availableTimes: availableTimes,
+    });
+  });
+});
+
 module.exports = router;

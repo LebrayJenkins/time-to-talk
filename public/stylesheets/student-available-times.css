@@ -1,0 +1,160 @@
+/* Elev - lediga tider */
+
+
+/* ===== Grundlayout ===== */
+
+.student-available-times {
+    background-color: #ffffff;
+}
+
+.student-available-times .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.student-available-times .dashboard-main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 16px;
+}
+
+
+/* ===== Header ===== */
+
+.student-available-times .dashboard-header {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-bottom: 32px;
+}
+
+.student-available-times .dashboard-brand {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.student-available-times .dashboard-menu-button {
+    grid-column: 1;
+    grid-row: 1;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+.student-available-times .dashboard-menu-button:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+
+/* ===== Huvudinnehåll ===== */
+
+.student-available-times section {
+    max-width: 520px;
+}
+
+.student-available-times .form-select {
+    max-width: 100%;
+}
+
+
+/* ===== Lista med tider ===== */
+
+.available-times-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.available-time-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px;
+    background-color: #eeeeee;
+}
+
+.available-time-information {
+    min-width: 0;
+}
+
+.available-time-date,
+.available-time-clock,
+.available-time-activity,
+.available-time-teacher {
+    margin: 0;
+}
+
+.available-time-date {
+    font-size: 0.9rem;
+}
+
+.available-time-clock {
+    font-weight: 700;
+}
+
+.available-time-activity {
+    font-size: 0.9rem;
+}
+
+.available-time-teacher {
+    font-size: 0.85rem;
+}
+
+.select-time-button {
+    flex-shrink: 0;
+}
+
+
+/* ===== Fortsätt ===== */
+
+.available-times-actions {
+    margin-top: 24px;
+}
+
+.available-times-actions .btn {
+    width: 100%;
+}
+
+
+/* ===== Desktop ===== */
+
+@media (min-width: 768px) {
+
+    .student-available-times .dashboard-main {
+        padding: 24px 40px;
+    }
+
+    .student-available-times .dashboard-header {
+        display: block;
+        min-height: auto;
+    }
+
+    .student-available-times .dashboard-brand {
+        max-width: 350px;
+        background-color: #d9d9d9;
+    }
+
+}
+
+
+/* ===== Mobil ===== */
+
+@media (max-width: 767.98px) {
+
+    .available-time-card {
+        align-items: flex-start;
+    }
+
+    .select-time-button {
+        align-self: center;
+    }
+
+}
