@@ -3,18 +3,42 @@ const db = require("../database");
 
 const router = express.Router();
 
-/* Startsida */
+/**
+ * Middleware för att kontrollera lärarbehörighet
+ */
+function requireTeacher(req, res, next) {
+  if (req.session && req.session.user && req.session.user.role === "teacher") {
+    return next();
+  }
+  return res.redirect("/login?role=teacher&error=" + encodeURIComponent("Vänligen logga in som lärare."));
+}
+
+/* Startsida: omdirigera direkt till inloggning */
 router.get("/", (req, res) => {
-  res.render("index", {
-    title: "Startsida",
-  });
+  if (req.session && req.session.user) {
+    if (req.session.user.role === "teacher") {
+      return res.redirect("/teacher/dashboard");
+    }
+    if (req.session.user.role === "student") {
+      return res.redirect("/student-dashboard");
+    }
+  }
+  res.redirect("/login");
 });
 
 /* GET: Inloggningssida */
 router.get("/login", (req, res) => {
+  if (req.session && req.session.user) {
+    if (req.session.user.role === "teacher") {
+      return res.redirect("/teacher/dashboard");
+    }
+    if (req.session.user.role === "student") {
+      return res.redirect("/student-dashboard");
+    }
+  }
   res.render("login", {
     title: "Logga in",
-    role: req.query.role || "teacher",
+    role: req.query.role || "student",
     error: req.query.error || null,
     email: req.query.email || "",
   });
@@ -66,12 +90,25 @@ router.post("/login", (req, res) => {
     };
 
     console.log(`Inloggning lyckades: ${user.name} (${user.role})`);
+    if (user.role === "teacher") {
+      return res.redirect("/teacher/dashboard");
+    } else if (user.role === "student") {
+      return res.redirect("/student-dashboard");
+    }
     return res.redirect("/");
   });
 });
 
 /* GET: Registreringssida */
 router.get("/register", (req, res) => {
+  if (req.session && req.session.user) {
+    if (req.session.user.role === "teacher") {
+      return res.redirect("/teacher/dashboard");
+    }
+    if (req.session.user.role === "student") {
+      return res.redirect("/student-dashboard");
+    }
+  }
   res.render("register", {
     title: "Skapa konto",
     role: req.query.role || "teacher",
@@ -136,6 +173,11 @@ router.post("/register", (req, res) => {
         role: newUser.role,
       };
 
+      if (newUser.role === "teacher") {
+        return res.redirect("/teacher/dashboard");
+      } else if (newUser.role === "student") {
+        return res.redirect("/student-dashboard");
+      }
       return res.redirect("/");
     });
   });
@@ -148,7 +190,6 @@ router.get("/logout", (req, res) => {
       if (err) {
         console.error("Fel vid utloggning:", err);
       }
-
       res.redirect("/login");
     });
   } else {
@@ -156,22 +197,45 @@ router.get("/logout", (req, res) => {
   }
 });
 
+/* GET: Lärardashboard */
+router.get("/teacher/dashboard", requireTeacher, (req, res) => {
+  const teacher = req.session.user;
+  db.getTeacherTimes(teacher.id, (err, times) => {
+    if (err) {
+      console.error("Kunde inte hämta tider för lärare:", err.message);
+      times = [];
+    }
+    const now = new Date();
+    const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+    const todayFormatted = `${now.getDate()} ${months[now.getMonth()]}`;
+
+    res.render("teacher-dashboard", {
+      title: "Lärardashboard",
+      teacher: teacher,
+      times: times || [],
+      todayFormatted: todayFormatted,
+      success: req.query.success === "created",
+    });
+  });
+});
+
+/* Alias: /teacher-dashboard */
+router.get("/teacher-dashboard", (req, res) => {
+  res.redirect("/teacher/dashboard");
+});
+
 /* GET: Visa sidan där läraren skapar tider */
-router.get("/teacher/tider/skapa", (req, res) => {
+router.get("/teacher/tider/skapa", requireTeacher, (req, res) => {
   res.render("teacher-create-time");
 });
 
 /* POST: Spara lärarens nya tid */
-router.post("/teacher/tider/skapa", (req, res) => {
+router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
   const activity = req.body.activity;
   const date = req.body.date;
   const startTime = req.body.start_time;
   const endTime = req.body.end_time;
-
-  console.log("Vald aktivitet:", activity);
-  console.log("Datum:", date);
-  console.log("Starttid:", startTime);
-  console.log("Sluttid:", endTime);
+  const teacherId = req.session.user.id;
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -185,8 +249,6 @@ router.post("/teacher/tider/skapa", (req, res) => {
     return res.status(400).send("Sluttiden måste vara efter starttiden.");
   }
 
-  const teacherId = 1; // Hårdkodat lärar-ID för teständamål
-
   db.createAvailableTime(
     teacherId,
     date,
@@ -199,14 +261,8 @@ router.post("/teacher/tider/skapa", (req, res) => {
         return res.status(500).send("Kunde inte spara tiden.");
       }
 
-      console.log("Tid sparad:", time);
-
-      res.send(`
-        <h1>Tiden är skapad!</h1>
-        <p>Aktivitet: ${time.activity}</p>
-        <p>Datum: ${time.date}</p>
-        <p>Tid: ${time.startTime} - ${time.endTime}</p>
-      `);
+      console.log("Tid sparad för lärare:", teacherId, time);
+      res.redirect("/teacher/dashboard?success=created");
     },
   );
 });
