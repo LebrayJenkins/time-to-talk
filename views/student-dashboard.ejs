@@ -30,107 +30,114 @@
 
                 <main id="main-content" class="dashboard-main" tabindex="-1">
 
-                    <h1 class="h4 mb-4">
-                        Välkommen, <%= studentName %>!
-                    </h1>
+                    <h1 class="h4 mb-4">Välkommen, <%= studentName %>!</h1>
 
-                    <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
+                    <% if (bookingCancelled) { %>
+                        <div class="alert alert-success" role="status">
+                            Din bokning har avbokats.
+                        </div>
+                        <% } %>
 
-                        <h2 id="bookings-heading" class="h5 mb-4">
-                            Mina kommande bokningar
-                        </h2>
+                            <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
 
-                        <% if (bookings.length===0) { %>
+                                <h2 id="bookings-heading" class="h5 mb-4">
+                                    Mina kommande bokningar
+                                </h2>
 
-                            <p>Du har inga kommande bokningar.</p>
+                                <% if (bookings.length===0) { %>
 
-                            <% } else { %>
+                                    <p>Du har inga kommande bokningar.</p>
 
-                                <% bookings.forEach(function(booking) { %>
-                                    <% const dateParts=booking.date.split("-").map(Number); const bookingDate=new
-                                        Date(Date.UTC( dateParts[0], dateParts[1] - 1, dateParts[2] )); const
-                                        weekday=bookingDate.toLocaleDateString( "sv-SE" , { weekday: "short" ,
-                                        timeZone: "UTC" } ); const day=bookingDate.toLocaleDateString( "sv-SE" , {
-                                        day: "numeric" , timeZone: "UTC" } ); const
-                                        month=bookingDate.toLocaleDateString( "sv-SE" , { month: "short" ,
-                                        timeZone: "UTC" } ); %>
+                                    <% } else { %>
 
-                                        <article class="booking-card d-flex flex-wrap align-items-center gap-3 mb-3">
+                                        <% bookings.forEach(function(booking) { %>
+                                            <% const dateParts=booking.date.split("-").map(Number); const
+                                                bookingDate=new Date(Date.UTC( dateParts[0], dateParts[1] - 1,
+                                                dateParts[2] )); const weekday=bookingDate.toLocaleDateString( "sv-SE" ,
+                                                { weekday: "short" , timeZone: "UTC" } ); const
+                                                day=bookingDate.toLocaleDateString( "sv-SE" , { day: "numeric" ,
+                                                timeZone: "UTC" } ); const month=bookingDate.toLocaleDateString( "sv-SE"
+                                                , { month: "short" , timeZone: "UTC" } ); %>
 
-                                            <div class="booking-date">
-                                                <span>
-                                                    <%= weekday %>
-                                                </span>
-                                                <strong>
-                                                    <%= day %>
-                                                </strong>
-                                                <span>
-                                                    <%= month %>
-                                                </span>
-                                            </div>
+                                                <article
+                                                    class="booking-card d-flex flex-wrap align-items-center gap-3 mb-3">
 
-                                            <div class="booking-information">
-                                                <h3 class="h6">
-                                                    <%= booking.activity %>
-                                                </h3>
+                                                    <div class="booking-date">
+                                                        <span>
+                                                            <%= weekday %>
+                                                        </span>
+                                                        <strong>
+                                                            <%= day %>
+                                                        </strong>
+                                                        <span>
+                                                            <%= month %>
+                                                        </span>
+                                                    </div>
 
-                                                <p>Lärare: <%= booking.teacher_name %>
-                                                </p>
+                                                    <div class="booking-information">
+                                                        <h3 class="h6">
+                                                            <%= booking.activity %>
+                                                        </h3>
 
-                                                <p>
-                                                    <time datetime="<%= booking.date %>">
-                                                        <%= booking.date %>
-                                                    </time>
-                                                </p>
+                                                        <p>Lärare: <%= booking.teacher_name %>
+                                                        </p>
 
-                                                <p>
-                                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
-                                                        <%= booking.start_time.slice(0, 5) %>
-                                                    </time>
-                                                    –
-                                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
-                                                        <%= booking.end_time.slice(0, 5) %>
-                                                    </time>
-                                                </p>
-                                            </div>
+                                                        <p>
+                                                            <time datetime="<%= booking.date %>">
+                                                                <%= booking.date %>
+                                                            </time>
+                                                        </p>
 
-                                            <a href="/student/bokningar/<%= booking.id %>"
-                                                class="btn btn-outline-dark ms-auto d-inline-flex align-items-center justify-content-center">
-                                                Visa detaljer
-                                            </a>
+                                                        <p>
+                                                            <time
+                                                                datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                                                <%= booking.start_time.slice(0, 5) %>
+                                                            </time>
+                                                            –
+                                                            <time
+                                                                datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                                                <%= booking.end_time.slice(0, 5) %>
+                                                            </time>
+                                                        </p>
+                                                    </div>
 
-                                        </article>
-                                        <% }); %>
+                                                    <a href="/student/bokningar/<%= booking.id %>"
+                                                        class="btn btn-outline-dark ms-auto d-inline-flex align-items-center justify-content-center">
+                                                        Visa detaljer
+                                                    </a>
 
-                                            <% } %>
+                                                </article>
+                                                <% }); %>
 
-                    </section>
+                                                    <% } %>
 
-                    <section class="dashboard-actions" aria-labelledby="actions-heading">
-                        <h2 id="actions-heading" class="h5 mb-3">
-                            Vad vill du göra?
-                        </h2>
+                            </section>
 
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <div class="dashboard-action d-flex flex-column
+                            <section class="dashboard-actions" aria-labelledby="actions-heading">
+                                <h2 id="actions-heading" class="h5 mb-3">
+                                    Vad vill du göra?
+                                </h2>
+
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="dashboard-action d-flex flex-column
                         align-items-center justify-content-between
                         gap-4 h-100 text-center">
 
-                                    <div class="action-symbol rounded-circle d-flex
+                                            <div class="action-symbol rounded-circle d-flex
                             align-items-center justify-content-center" aria-hidden="true">
-                                        ▦
-                                    </div>
+                                                ▦
+                                            </div>
 
-                                    <!-- Kopplat till lediga tider -->
-                                    <a href="/student/lediga-tider"
-                                        class="btn btn-outline-dark w-100 d-inline-flex align-items-center justify-content-center">
-                                        Boka aktivitet
-                                    </a>
+                                            <!-- Kopplat till lediga tider -->
+                                            <a href="/student/lediga-tider"
+                                                class="btn btn-outline-dark w-100 d-inline-flex align-items-center justify-content-center">
+                                                Boka aktivitet
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </section>
+                            </section>
 
                 </main>
 

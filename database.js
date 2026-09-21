@@ -585,6 +585,119 @@ function getBookingDetailsForStudent(bookingId, studentId, callback) {
   db.get(sql, [bookingId, studentId], callback);
 }
 
+/* Avboka en bokning som tillhör den inloggade eleven */
+function cancelBookingForStudent(bookingId, studentId, callback) {
+  // Egen anslutning håller transaktionen separat från andra anrop.
+  const connection = new sqlite3.Database(dbPath, (openErr) => {
+    if (openErr) {
+      return callback(openErr);
+    }
+
+    connection.configure("busyTimeout", 5000);
+
+    connection.run("PRAGMA foreign_keys = ON", (pragmaErr) => {
+      if (pragmaErr) {
+        return finish(pragmaErr);
+      }
+
+      connection.run("BEGIN IMMEDIATE TRANSACTION", (beginErr) => {
+        if (beginErr) {
+          return finish(beginErr);
+        }
+
+        connection.get(
+          `SELECT available_time_id
+           FROM bookings
+           WHERE id = ?
+             AND student_id = ?
+             AND status = 'bokad'`,
+          [bookingId, studentId],
+          (err, booking) => {
+            if (err) {
+              return rollback(err);
+            }
+
+            if (!booking) {
+              const error = new Error("Bokningen hittades inte.");
+              error.code = "BOOKING_NOT_FOUND";
+              return rollback(error);
+            }
+
+            connection.run(
+              `UPDATE bookings
+               SET status = 'avbokad'
+               WHERE id = ?
+                 AND student_id = ?
+                 AND status = 'bokad'`,
+              [bookingId, studentId],
+              (updateErr) => {
+                if (updateErr) {
+                  return rollback(updateErr);
+                }
+
+                // Återöppna inte en tid som läraren har avbokat.
+                // Frigör inte heller tiden om någon annan bokning finns.
+                connection.run(
+                  `UPDATE available_times
+                   SET status = 'tillgänglig'
+                   WHERE id = ?
+                     AND status = 'bokad'
+                     AND NOT EXISTS (
+                       SELECT 1
+                       FROM bookings
+                       WHERE available_time_id = ?
+                         AND status = 'bokad'
+                     )`,
+                  [booking.available_time_id, booking.available_time_id],
+                  (timeErr) => {
+                    if (timeErr) {
+                      return rollback(timeErr);
+                    }
+
+                    connection.run("COMMIT", (commitErr) => {
+                      if (commitErr) {
+                        return rollback(commitErr);
+                      }
+
+                      finish(null, {
+                        bookingId: bookingId,
+                        status: "avbokad",
+                      });
+                    });
+                  },
+                );
+              },
+            );
+          },
+        );
+      });
+    });
+  });
+
+  function finish(err, result) {
+    connection.close((closeErr) => {
+      if (closeErr) {
+        console.error("Kunde inte stänga anslutningen:", closeErr.message);
+      }
+
+      callback(err, result);
+    });
+  }
+
+  function rollback(err) {
+    connection.run("ROLLBACK", (rollbackErr) => {
+      if (rollbackErr) {
+        console.error(
+          "Kunde inte återställa transaktionen:",
+          rollbackErr.message,
+        );
+      }
+
+      finish(err);
+    });
+  }
+}
+
 module.exports = {
   db,
   createUser,
@@ -601,4 +714,7 @@ module.exports = {
   cancelAvailableTime,
   getBookingDetails,
   getBookingDetailsForStudent,
+  getBookingDetails,
+  getBookingDetailsForStudent,
+  cancelBookingForStudent,
 };

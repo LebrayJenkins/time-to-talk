@@ -348,7 +348,8 @@ router.get("/student-dashboard", requireStudent, (req, res) => {
     res.render("student-dashboard", {
       title: "Min översikt",
       bookings: upcomingBookings,
-      studentName: req.session.user.name,
+      studentName: student.name,
+      bookingCancelled: req.query.success === "cancelled",
     });
   });
 });
@@ -394,6 +395,33 @@ router.get("/student/bokningar/:id", requireStudent, (req, res) => {
       title: "Bokningsdetaljer",
       booking: booking,
     });
+  });
+});
+
+/* POST: Avboka elevens egen bokning */
+router.post("/student/bokningar/:id/avboka", requireStudent, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.cancelBookingForStudent(bookingId, studentId, (err) => {
+    if (err) {
+      if (err.code === "BOOKING_NOT_FOUND") {
+        return res
+          .status(404)
+          .send("Bokningen finns inte eller är redan avbokad.");
+      }
+
+      console.error("Kunde inte avboka bokningen:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte avboka bokningen. Försök igen senare.");
+    }
+
+    res.redirect(303, "/student-dashboard?success=cancelled");
   });
 });
 
