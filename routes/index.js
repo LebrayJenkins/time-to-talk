@@ -348,6 +348,7 @@ router.get("/student-dashboard", requireStudent, (req, res) => {
     res.render("student-dashboard", {
       title: "Min översikt",
       bookings: upcomingBookings,
+      studentName: req.session.user.name,
     });
   });
 });
