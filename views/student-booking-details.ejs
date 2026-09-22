@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="sv">
+
+<%- include("partials/head", { title: "Bokningsdetaljer" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-dashboard.css" , "/stylesheets/logo.css" ] }) %>
+
+    <body class="student-dashboard">
+
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
+
+        <div class="dashboard-layout">
+
+            <%- include("partials/student-sidebar") %>
+
+                <main id="main-content" class="dashboard-main" tabindex="-1">
+
+                    <header class="dashboard-header">
+                        <p class="dashboard-brand">TimeToTalk</p>
+
+                        <button type="button" class="btn btn-outline-dark d-md-none dashboard-menu-button"
+                            data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu"
+                            aria-controls="student-mobile-menu" aria-label="Öppna meny">
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                    </header>
+
+                    <h1 class="h4 mb-4">Bokningsdetaljer</h1>
+
+                    <section class="dashboard-bookings mb-4" aria-labelledby="booking-heading">
+
+                        <h2 id="booking-heading" class="h5 mb-4">
+                            <%= booking.activity %>
+                        </h2>
+
+                        <dl>
+                            <dt>Lärare</dt>
+                            <dd class="mb-3">
+                                <%= booking.teacher_name %>
+                            </dd>
+
+                            <dt>Datum</dt>
+                            <dd class="mb-3">
+                                <time datetime="<%= booking.date %>">
+                                    <%= booking.date %>
+                                </time>
+                            </dd>
+
+                            <dt>Tid</dt>
+                            <dd class="mb-3">
+                                <time datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                    <%= booking.start_time.slice(0, 5) %>
+                                </time>
+                                –
+                                <time datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                    <%= booking.end_time.slice(0, 5) %>
+                                </time>
+                            </dd>
+                        </dl>
+
+                    </section>
+
+                    <a href="/student-dashboard" class="btn btn-outline-dark">
+                        Tillbaka till min översikt
+                    </a>
+
+                </main>
+
+        </div>
+
+        <%- include("partials/scripts") %>
+
+    </body>
+
+</html>

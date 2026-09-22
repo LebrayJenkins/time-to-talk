@@ -367,4 +367,33 @@ router.get("/student/lediga-tider", (req, res) => {
   });
 });
 
+/* GET: Visa detaljer för elevens egen bokning */
+router.get("/student/bokningar/:id", requireStudent, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForStudent(bookingId, studentId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+
+      return res
+        .status(500)
+        .send("Kunde inte hämta bokningen. Försök igen senare.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("student-booking-details", {
+      title: "Bokningsdetaljer",
+      booking: booking,
+    });
+  });
+});
+
 module.exports = router;

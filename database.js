@@ -3,16 +3,17 @@ const sqlite3 = require("sqlite3").verbose();
 
 const dbPath = path.join(__dirname, "timetotalk.db");
 const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error("Kunde inte öppna databasen:", err.message);
-    } else {
-        console.log("SQLite-databasen är ansluten.");
-        
-        //aktivera foregin keys
-        db.run("PRAGMA foreign_keys = ON");
+  if (err) {
+    console.error("Kunde inte öppna databasen:", err.message);
+  } else {
+    console.log("SQLite-databasen är ansluten.");
 
-        //skapa users-tabellen
-        db.run(`
+    //aktivera foregin keys
+    db.run("PRAGMA foreign_keys = ON");
+
+    //skapa users-tabellen
+    db.run(
+      `
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT UNIQUE NOT NULL,
@@ -20,16 +21,19 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 password TEXT NOT NULL,
                 role TEXT NOT NULL CHECK(role IN ('student', 'teacher'))
             )
-        `, (err) => {
-            if (err) {
-                console.error("Kunde inte skapa tabellen:", err.message);
-            } else {
-                console.log("Tabellen 'users' är skapad eller finns redan.");
-            }
-        });
+        `,
+      (err) => {
+        if (err) {
+          console.error("Kunde inte skapa tabellen:", err.message);
+        } else {
+          console.log("Tabellen 'users' är skapad eller finns redan.");
+        }
+      },
+    );
 
-        //skapa available_times-tabellen
-        db.run(`
+    //skapa available_times-tabellen
+    db.run(
+      `
             CREATE TABLE IF NOT EXISTS available_times (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 teacher_id INTEGER NOT NULL,
@@ -41,16 +45,24 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 FOREIGN KEY (teacher_id) REFERENCES users (id)
             
             )
-        `, (err) => {
-            if (err) {
-                console.error("Kunde inte skapa available_times-tabellen:", err.message);
-            } else {
-                console.log("Tabellen 'available_times' är skapad eller finns redan.");
-            }
-        });
+        `,
+      (err) => {
+        if (err) {
+          console.error(
+            "Kunde inte skapa available_times-tabellen:",
+            err.message,
+          );
+        } else {
+          console.log(
+            "Tabellen 'available_times' är skapad eller finns redan.",
+          );
+        }
+      },
+    );
 
-        //skapa bookings-tabellen
-        db.run(`
+    //skapa bookings-tabellen
+    db.run(
+      `
             CREATE TABLE IF NOT EXISTS bookings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,   
                 available_time_id INTEGER NOT NULL,
@@ -60,136 +72,137 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 FOREIGN KEY (available_time_id) REFERENCES available_times (id),
                 FOREIGN KEY (student_id) REFERENCES users (id)
             )
-        `, (err) => {
-            if (err) {
-                console.error("Kunde inte skapa bookings-tabellen:", err.message);
-            } else {
-                console.log("Tabellen 'bookings' är skapad eller finns redan.");
-                seedInitialData(db);
-            }
-
-        });
-    }
-});        
+        `,
+      (err) => {
+        if (err) {
+          console.error("Kunde inte skapa bookings-tabellen:", err.message);
+        } else {
+          console.log("Tabellen 'bookings' är skapad eller finns redan.");
+          seedInitialData(db);
+        }
+      },
+    );
+  }
+});
 
 function seedInitialData(database) {
-    // Skapar endast initiala standardkonton om users-tabellen är helt tom
-    database.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
-        if (!err && row && row.count === 0) {
-            console.log("Databasen är tom. Skapar grundanvändare...");
-            database.run(
-                `INSERT INTO users (name, email, password, role) VALUES 
+  // Skapar endast initiala standardkonton om users-tabellen är helt tom
+  database.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
+    if (!err && row && row.count === 0) {
+      console.log("Databasen är tom. Skapar grundanvändare...");
+      database.run(
+        `INSERT INTO users (name, email, password, role) VALUES 
                 ('Sara Svensson', 'sara@timetotalk.se', 'larare123', 'teacher'),
                 ('Martin Lindgren', 'martin@timetotalk.se', 'larare123', 'teacher'),
-                ('Mårten Larsson', 'marten@skola.se', 'elev123', 'student')`
-            );
-        }
-    });
+                ('Mårten Larsson', 'marten@skola.se', 'elev123', 'student')`,
+      );
+    }
+  });
 }
 
 function createUser(name, email, password, role, callback) {
-        const sql = `
+  const sql = `
         INSERT INTO users (name, email, password, role)
         VALUES (?, ?, ?, ?)
     `;
 
-    db.run(sql, [name, email, password, role], function (err) {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.run(sql, [name, email, password, role], function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        callback(null, {
-            id: this.lastID,
-            name: name,
-            email: email,
-            role: role
-        });
+    callback(null, {
+      id: this.lastID,
+      name: name,
+      email: email,
+      role: role,
     });
+  });
 }
 
 function createUser(name, email, password, role, callback) {
-    const sql = `
+  const sql = `
         INSERT INTO users (name, email, password, role)
         VALUES (?, ?, ?, ?)
     `;
 
-    db.run(sql, [name.trim(), email.trim().toLowerCase(), password, role], function (err) {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.run(
+    sql,
+    [name.trim(), email.trim().toLowerCase(), password, role],
+    function (err) {
+      if (err) {
+        callback(err);
+        return;
+      }
 
-        callback(null, {
-            id: this.lastID,
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            role: role
-        });
-    });
+      callback(null, {
+        id: this.lastID,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        role: role,
+      });
+    },
+  );
 }
 
 function getUserByEmail(email, callback) {
-    const cleanEmail = (email || "").trim().toLowerCase();
-    const sql = `
+  const cleanEmail = (email || "").trim().toLowerCase();
+  const sql = `
         SELECT id, name, email, password, role
         FROM users
         WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))
     `;
 
-    db.get(sql, [cleanEmail], (err, user) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.get(sql, [cleanEmail], (err, user) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        if (!user) {
-            callback(new Error("Användaren finns inte."));
-            return;
-        }
+    if (!user) {
+      callback(new Error("Användaren finns inte."));
+      return;
+    }
 
-        callback(null, user);
-    });
+    callback(null, user);
+  });
 }
 
 function createAvailableTime(
-    teacherId,
-    date,
-    startTime,
-    endTime,
-    activity,
-    callback
+  teacherId,
+  date,
+  startTime,
+  endTime,
+  activity,
+  callback,
 ) {
-    const sql = `
+  const sql = `
         INSERT INTO available_times
         (teacher_id, date, start_time, end_time, activity)
         VALUES (?, ?, ?, ?, ?)
     `;
 
-    db.run(
-        sql,
-        [teacherId, date, startTime, endTime, activity],
-        function (err) {
-            if (err) {
-                callback(err);
-                return;
-            }
+  db.run(sql, [teacherId, date, startTime, endTime, activity], function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-            callback(null, {
-                id: this.lastID,
-                teacherId: teacherId,
-                date: date,
-                startTime: startTime,
-                endTime: endTime,
-                activity: activity,
-                status: "tillgänglig"
-            });
-        }
-    );
+    callback(null, {
+      id: this.lastID,
+      teacherId: teacherId,
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+      activity: activity,
+      status: "tillgänglig",
+    });
+  });
 }
 
 function getAvailableTimes(callback) {
-    const sql = `
+  const sql = `
         SELECT
             available_times.id,
             available_times.date,
@@ -203,75 +216,75 @@ function getAvailableTimes(callback) {
         ORDER BY available_times.date, available_times.start_time
     `;
 
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        callback(null, rows);
-    });
+    callback(null, rows);
+  });
 }
 
 function createBooking(availableTimeId, studentId, callback) {
-    const checkSql = `
+  const checkSql = `
         SELECT status
         FROM available_times
         WHERE id = ?
     `;
 
-    db.get(checkSql, [availableTimeId], (err, time) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.get(checkSql, [availableTimeId], (err, time) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        if (!time) {
-            callback(new Error("Tiden finns inte."));
-            return;
-        }
+    if (!time) {
+      callback(new Error("Tiden finns inte."));
+      return;
+    }
 
-        if (time.status !== "tillgänglig") {
-            callback(new Error("Tiden är inte tillgänglig."));
-            return;
-        }
+    if (time.status !== "tillgänglig") {
+      callback(new Error("Tiden är inte tillgänglig."));
+      return;
+    }
 
-        const sql = `
+    const sql = `
             INSERT INTO bookings (available_time_id, student_id, status)
             VALUES (?, ?, 'bokad')
         `;
 
-        db.run(sql, [availableTimeId, studentId], function (err) {
-            if (err) {
-                callback(err);
-                return;
-            }
+    db.run(sql, [availableTimeId, studentId], function (err) {
+      if (err) {
+        callback(err);
+        return;
+      }
 
-            db.run(
-                `UPDATE available_times
+      db.run(
+        `UPDATE available_times
                  SET status = 'bokad'
                  WHERE id = ?`,
-                [availableTimeId],
-                (updateErr) => {
-                    if (updateErr) {
-                        callback(updateErr);
-                        return;
-                    }
+        [availableTimeId],
+        (updateErr) => {
+          if (updateErr) {
+            callback(updateErr);
+            return;
+          }
 
-                    callback(null, {
-                        id: this.lastID,
-                        availableTimeId: availableTimeId,
-                        studentId: studentId,
-                        status: "bokad"
-                    });
-                }
-            );
-        });
+          callback(null, {
+            id: this.lastID,
+            availableTimeId: availableTimeId,
+            studentId: studentId,
+            status: "bokad",
+          });
+        },
+      );
     });
+  });
 }
 
 function getBookingsForStudent(studentId, callback) {
-    const sql = `
+  const sql = `
         SELECT
             bookings.id,
             available_times.date,
@@ -289,71 +302,71 @@ function getBookingsForStudent(studentId, callback) {
         ORDER BY available_times.date, available_times.start_time
     `;
 
-    db.all(sql, [studentId], (err, rows) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.all(sql, [studentId], (err, rows) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        callback(null, rows);
-    });
+    callback(null, rows);
+  });
 }
 
 function cancelBooking(bookingId, callback) {
-    const sql = `
+  const sql = `
         SELECT available_time_id
         FROM bookings
         WHERE id = ?
           AND status = 'bokad'
     `;
 
-    db.get(sql, [bookingId], (err, booking) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.get(sql, [bookingId], (err, booking) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        if (!booking) {
-            callback(new Error("Bokningen finns inte eller är redan avbokad."));
-            return;
+    if (!booking) {
+      callback(new Error("Bokningen finns inte eller är redan avbokad."));
+      return;
+    }
+
+    db.run(
+      `UPDATE bookings
+             SET status = 'avbokad'
+             WHERE id = ?`,
+      [bookingId],
+      (updateErr) => {
+        if (updateErr) {
+          callback(updateErr);
+          return;
         }
 
         db.run(
-            `UPDATE bookings
-             SET status = 'avbokad'
-             WHERE id = ?`,
-            [bookingId],
-            (updateErr) => {
-                if (updateErr) {
-                    callback(updateErr);
-                    return;
-                }
-
-                db.run(
-                    `UPDATE available_times
+          `UPDATE available_times
                      SET status = 'tillgänglig'
                      WHERE id = ?`,
-                    [booking.available_time_id],
-                    (timeErr) => {
-                        if (timeErr) {
-                            callback(timeErr);
-                            return;
-                        }
-
-                        callback(null, {
-                            bookingId: bookingId,
-                            status: "avbokad",
-                            availableTimeId: booking.available_time_id
-                        });
-                    }
-                );
+          [booking.available_time_id],
+          (timeErr) => {
+            if (timeErr) {
+              callback(timeErr);
+              return;
             }
+
+            callback(null, {
+              bookingId: bookingId,
+              status: "avbokad",
+              availableTimeId: booking.available_time_id,
+            });
+          },
         );
-    });
+      },
+    );
+  });
 }
 
 function getBookingsForTeacher(teacherId, callback) {
-    const sql = `
+  const sql = `
         SELECT
             bookings.id,
             available_times.date,
@@ -371,18 +384,18 @@ function getBookingsForTeacher(teacherId, callback) {
         ORDER BY available_times.date, available_times.start_time
     `;
 
-    db.all(sql, [teacherId], (err, rows) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.all(sql, [teacherId], (err, rows) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        callback(null, rows);
-    });
+    callback(null, rows);
+  });
 }
 
 function getTeacherTimes(teacherId, callback) {
-    const sql = `
+  const sql = `
         SELECT
             available_times.id,
             available_times.date,
@@ -401,25 +414,25 @@ function getTeacherTimes(teacherId, callback) {
         ORDER BY available_times.date, available_times.start_time
     `;
 
-    db.all(sql, [teacherId], (err, rows) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.all(sql, [teacherId], (err, rows) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        callback(null, rows);
-    });
+    callback(null, rows);
+  });
 }
 
 function updateAvailableTime(
-    timeId,
-    date,
-    startTime,
-    endTime,
-    activity,
-    callback
+  timeId,
+  date,
+  startTime,
+  endTime,
+  activity,
+  callback,
 ) {
-    const sql = `
+  const sql = `
         UPDATE available_times
         SET
             date = ?,
@@ -429,85 +442,81 @@ function updateAvailableTime(
         WHERE id = ?
     `;
 
-    db.run(
-        sql,
-        [date, startTime, endTime, activity, timeId],
-        function (err) {
-            if (err) {
-                callback(err);
-                return;
-            }
+  db.run(sql, [date, startTime, endTime, activity, timeId], function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-            if (this.changes === 0) {
-                callback(new Error("Tiden finns inte."));
-                return;
-            }
+    if (this.changes === 0) {
+      callback(new Error("Tiden finns inte."));
+      return;
+    }
 
-            callback(null, {
-                id: timeId,
-                date: date,
-                startTime: startTime,
-                endTime: endTime,
-                activity: activity
-            });
-        }
-    );
+    callback(null, {
+      id: timeId,
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+      activity: activity,
+    });
+  });
 }
 
 function cancelAvailableTime(timeId, callback) {
-    const sql = `
+  const sql = `
         SELECT status
         FROM available_times
         WHERE id = ?
     `;
 
-    db.get(sql, [timeId], (err, time) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.get(sql, [timeId], (err, time) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        if (!time) {
-            callback(new Error("Tiden finns inte."));
-            return;
+    if (!time) {
+      callback(new Error("Tiden finns inte."));
+      return;
+    }
+
+    db.run(
+      `UPDATE available_times
+             SET status = 'avbokad'
+             WHERE id = ?`,
+      [timeId],
+      (updateErr) => {
+        if (updateErr) {
+          callback(updateErr);
+          return;
         }
 
         db.run(
-            `UPDATE available_times
-             SET status = 'avbokad'
-             WHERE id = ?`,
-            [timeId],
-            (updateErr) => {
-                if (updateErr) {
-                    callback(updateErr);
-                    return;
-                }
-
-                db.run(
-                    `UPDATE bookings
+          `UPDATE bookings
                      SET status = 'avbokad'
                      WHERE available_time_id = ?
                        AND status = 'bokad'`,
-                    [timeId],
-                    (bookingErr) => {
-                        if (bookingErr) {
-                            callback(bookingErr);
-                            return;
-                        }
-
-                        callback(null, {
-                            id: timeId,
-                            status: "avbokad"
-                        });
-                    }
-                );
+          [timeId],
+          (bookingErr) => {
+            if (bookingErr) {
+              callback(bookingErr);
+              return;
             }
+
+            callback(null, {
+              id: timeId,
+              status: "avbokad",
+            });
+          },
         );
-    });
+      },
+    );
+  });
 }
 
 function getBookingDetails(bookingId, callback) {
-    const sql = `
+  const sql = `
         SELECT
             bookings.id,
             users.name AS student_name,
@@ -528,44 +537,68 @@ function getBookingDetails(bookingId, callback) {
           AND bookings.status = 'bokad'
     `;
 
-    db.get(sql, [bookingId], (err, booking) => {
-        if (err) {
-            callback(err);
-            return;
-        }
+  db.get(sql, [bookingId], (err, booking) => {
+    if (err) {
+      callback(err);
+      return;
+    }
 
-        if (!booking) {
-            callback(new Error("Bokningen finns inte eller är inte aktiv."));
-            return;
-        }
+    if (!booking) {
+      callback(new Error("Bokningen finns inte eller är inte aktiv."));
+      return;
+    }
 
-        callback(null, booking);
-    });
+    callback(null, booking);
+  });
 }
 
 function deleteUser(id, callback) {
-    db.run("DELETE FROM users WHERE id = ?", [id], function (err) {
-        if (err) {
-            callback(err);
-            return;
-        }
-        callback(null, { deletedId: id, changes: this.changes });
-    });
+  db.run("DELETE FROM users WHERE id = ?", [id], function (err) {
+    if (err) {
+      callback(err);
+      return;
+    }
+    callback(null, { deletedId: id, changes: this.changes });
+  });
+}
+
+/* Hämta en bokning som tillhör den inloggade eleven */
+function getBookingDetailsForStudent(bookingId, studentId, callback) {
+  const sql = `
+        SELECT
+            bookings.id,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            users.name AS teacher_name
+        FROM bookings
+        JOIN available_times
+            ON bookings.available_time_id = available_times.id
+        JOIN users
+            ON available_times.teacher_id = users.id
+        WHERE bookings.id = ?
+          AND bookings.student_id = ?
+          AND bookings.status = 'bokad'
+    `;
+
+  db.get(sql, [bookingId, studentId], callback);
 }
 
 module.exports = {
-    db,
-    createUser,
-    getUserByEmail,
-    deleteUser,
-    createAvailableTime,
-    getAvailableTimes,
-    createBooking,
-    getBookingsForStudent,
-    cancelBooking,
-    getBookingsForTeacher,
-    getTeacherTimes,
-    updateAvailableTime,
-    cancelAvailableTime,
-    getBookingDetails
+  db,
+  createUser,
+  getUserByEmail,
+  deleteUser,
+  createAvailableTime,
+  getAvailableTimes,
+  createBooking,
+  getBookingsForStudent,
+  cancelBooking,
+  getBookingsForTeacher,
+  getTeacherTimes,
+  updateAvailableTime,
+  cancelAvailableTime,
+  getBookingDetails,
+  getBookingDetailsForStudent,
 };
