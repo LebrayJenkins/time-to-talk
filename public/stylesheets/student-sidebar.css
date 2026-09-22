@@ -1,7 +1,7 @@
-/* Lärarmeny – desktop och mobil */
+/* Elevmeny – desktop och mobil */
 
 /* Grund */
-.teacher-sidebar {
+.student-sidebar {
     --bs-offcanvas-width: 240px;
     --bs-offcanvas-bg: #4a4a4a;
     max-width: 100%;
@@ -9,36 +9,37 @@
     background-color: #4a4a4a !important;
 }
 
-.teacher-sidebar .offcanvas-body {
+.student-sidebar .offcanvas-body {
     gap: 24px;
     background-color: #4a4a4a;
 }
 
 /* Menylänkar */
-.teacher-sidebar .nav-link {
+.student-sidebar .nav-link {
     display: flex;
     align-items: center;
     min-height: 44px;
     padding: 12px;
     color: #ffffff;
+    background-color: transparent;
 }
 
 /* Muspekare och tangentbord: grå bakgrund */
-.teacher-sidebar .nav-link:hover,
-.teacher-sidebar .nav-link:focus-visible {
+.student-sidebar .nav-link:hover,
+.student-sidebar .nav-link:focus-visible {
     background-color: #5f5f5f;
     color: #ffffff;
 }
 
 /* Vit fokusram för länkar och knappar */
-.teacher-sidebar a:focus-visible,
-.teacher-sidebar button:focus-visible {
+.student-sidebar a:focus-visible,
+.student-sidebar button:focus-visible {
     outline: 3px solid #ffffff;
     outline-offset: 3px;
 }
 
 /* Stängningsknapp */
-.teacher-sidebar .btn-close {
+.student-sidebar .btn-close {
     position: relative;
     width: 44px;
     height: 44px;
@@ -51,7 +52,7 @@
 }
 
 /* Samma kryssikon, med färgfiltret endast på ikonen */
-.teacher-sidebar .btn-close::before {
+.student-sidebar .btn-close::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -64,72 +65,60 @@
 }
 
 /* Tab: vit rundad ram och genomskinlig bakgrund */
-.teacher-sidebar .btn-close:focus-visible {
+.student-sidebar .btn-close:focus-visible {
     background-color: transparent;
     outline: 3px solid #ffffff;
     outline-offset: 3px;
 }
 
+/* Logga ut */
+.student-sidebar .btn-outline-dark {
+    margin-top: auto;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.student-sidebar .btn-outline-dark:hover {
+    background-color: #ffffff;
+    color: #4a4a4a;
+}
+
+/* Tab: mörk bakgrund på Logga ut */
+.student-sidebar .btn-outline-dark:focus-visible {
+    background-color: #212529;
+    color: #ffffff;
+}
+
 /* Desktop */
 @media (min-width: 768px) {
-    .teacher-sidebar {
+    .student-sidebar {
         display: flex;
         flex-direction: column;
         width: 240px;
         flex-shrink: 0;
         align-self: stretch;
-        background-color: #4a4a4a;
     }
 
-    .teacher-sidebar .offcanvas-body {
+    .student-sidebar .offcanvas-body {
         flex-grow: 1;
         flex-direction: column;
         padding: 32px 16px;
     }
 
-    .teacher-sidebar-logo {
+    /* Logotyp på desktop */
+    .student-sidebar-logo {
         width: 100%;
         margin: 0 auto 40px;
-    }
-
-    .teacher-sidebar .nav-link {
-        background-color: transparent;
-    }
-
-    .teacher-sidebar .nav-link:hover,
-    .teacher-sidebar .nav-link:focus-visible {
-        background-color: #5f5f5f;
-        color: #ffffff;
-    }
-
-    .teacher-sidebar .btn-outline-dark {
-        margin-top: auto;
-        color: #ffffff;
-        border-color: #ffffff;
-    }
-
-    .teacher-sidebar .btn-outline-dark:hover {
-        background-color: #ffffff;
-        color: #4a4a4a;
     }
 }
 
 /* Mobil */
 @media (max-width: 767.98px) {
-    .teacher-sidebar {
+    .student-sidebar {
         --bs-offcanvas-width: 280px;
     }
 
-    .teacher-sidebar .offcanvas-body {
+    .student-sidebar .offcanvas-body {
         padding: 24px 16px;
-    }
-
-    .teacher-sidebar .nav-link {
-        color: #ffffff;
-    }
-
-    .teacher-sidebar .btn-outline-dark {
-        color: #ffffff;
-        border-color: #ffffff;
     }
 }

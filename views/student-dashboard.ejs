@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", { title: "Min översikt" , pageStylesheet: "/stylesheets/student-dashboard.css" }) %>
+<%- include("partials/head", { title: "Min översikt" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-dashboard.css" ,"/stylesheets/logo.css" ] }) %>
 
     <body class="student-dashboard">
 
@@ -32,29 +33,68 @@
                             Mina kommande bokningar
                         </h2>
 
-                        <!-- Exempeldata tills databasen kopplas in -->
-                        <article class="booking-card d-flex flex-wrap align-items-center gap-3">
-                            <div class="booking-date">
-                                <span>Tis</span>
-                                <strong>22</strong>
-                                <span>Sep</span>
-                            </div>
+                        <% if (bookings.length===0) { %>
 
-                            <div class="booking-information">
-                                <h3 class="h6">Handledning</h3>
-                                <p>Lärare: Sara</p>
-                                <p>
-                                    <time datetime="2026-09-22T13:00">13:00</time>
-                                    –
-                                    <time datetime="2026-09-22T13:30">13:30</time>
-                                </p>
-                            </div>
+                            <p>Du har inga kommande bokningar.</p>
 
-                            <!-- Funktionen kopplas in senare -->
-                            <button type="button" class="btn btn-outline-dark ms-auto">
-                                Visa detaljer
-                            </button>
-                        </article>
+                            <% } else { %>
+
+                                <% bookings.forEach(function(booking) { %>
+                                    <% const dateParts=booking.date.split("-").map(Number); const bookingDate=new
+                                        Date(Date.UTC( dateParts[0], dateParts[1] - 1, dateParts[2] )); const
+                                        weekday=bookingDate.toLocaleDateString("sv-SE", { weekday: "short" ,
+                                        timeZone: "UTC" }); const day=bookingDate.toLocaleDateString("sv-SE", {
+                                        day: "numeric" , timeZone: "UTC" }); const
+                                        month=bookingDate.toLocaleDateString("sv-SE", { month: "short" , timeZone: "UTC"
+                                        }); %>
+
+                                        <article class="booking-card d-flex flex-wrap align-items-center gap-3 mb-3">
+                                            <div class="booking-date">
+                                                <span>
+                                                    <%= weekday %>
+                                                </span>
+                                                <strong>
+                                                    <%= day %>
+                                                </strong>
+                                                <span>
+                                                    <%= month %>
+                                                </span>
+                                            </div>
+
+                                            <div class="booking-information">
+                                                <h3 class="h6">
+                                                    <%= booking.activity %>
+                                                </h3>
+
+                                                <p>Lärare: <%= booking.teacher_name %>
+                                                </p>
+
+                                                <p>
+                                                    <time datetime="<%= booking.date %>">
+                                                        <%= booking.date %>
+                                                    </time>
+                                                </p>
+
+                                                <p>
+                                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                                        <%= booking.start_time.slice(0, 5) %>
+                                                    </time>
+                                                    –
+                                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                                        <%= booking.end_time.slice(0, 5) %>
+                                                    </time>
+                                                </p>
+                                            </div>
+
+                                            <!-- Detaljfunktionen kopplas in senare -->
+                                            <button type="button" class="btn btn-outline-dark ms-auto" disabled>
+                                                Visa detaljer
+                                            </button>
+                                        </article>
+
+                                        <% }); %>
+
+                                            <% } %>
                     </section>
 
                     <section class="dashboard-actions" aria-labelledby="actions-heading">
