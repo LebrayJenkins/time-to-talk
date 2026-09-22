@@ -398,6 +398,7 @@ function getTeacherTimes(teacherId, callback) {
   const sql = `
         SELECT
             available_times.id,
+            bookings.id AS booking_id,
             available_times.date,
             available_times.start_time,
             available_times.end_time,
