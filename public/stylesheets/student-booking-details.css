@@ -1,0 +1,109 @@
+/* Grund */
+.student-booking-details {
+    position: relative;
+    background-color: #ffffff;
+}
+
+.student-booking-details .booking-details-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.student-booking-details .booking-details-main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 16px;
+}
+
+/* Mobil: menyknapp och namn på samma rad */
+.student-booking-details .booking-details-header {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    margin: 0;
+}
+
+.student-booking-details .booking-details-menu {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+/* Samma innehållsbredd och grå bakgrund som dashboarden */
+.student-booking-details .booking-details-content {
+    max-width: 520px;
+}
+
+.student-booking-details .booking-details-card {
+    padding: 20px;
+    background-color: #eeeeee;
+}
+
+.student-booking-details .booking-details-activity {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.student-booking-details .booking-details-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    background-color: #d9d9d9;
+}
+
+.student-booking-details .booking-details-activity h2 {
+    overflow-wrap: anywhere;
+}
+
+/* Etikett till vänster, information till höger */
+.student-booking-details .booking-details-information {
+    display: grid;
+    grid-template-columns: minmax(64px, 1fr) minmax(0, 2fr);
+    gap: 24px 16px;
+    margin: 0;
+}
+
+.student-booking-details .booking-details-information dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Knappar under kortet */
+.student-booking-details .booking-details-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.student-booking-details .booking-details-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 112px;
+}
+
+.student-booking-details .booking-details-main .btn:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .student-booking-details .booking-details-main {
+        padding: 24px 40px;
+    }
+
+    .student-booking-details .booking-details-actions {
+        justify-content: flex-end;
+    }
+}

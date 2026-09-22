@@ -2,7 +2,7 @@
 <html lang="sv">
 
 <%- include("partials/head", { title: "Min översikt" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
-    , "/stylesheets/student-dashboard.css" ,"/stylesheets/logo.css" ] }) %>
+    , "/stylesheets/student-dashboard.css" , "/stylesheets/logo.css" ] }) %>
 
     <body class="student-dashboard">
 
@@ -10,136 +10,137 @@
             Hoppa till huvudinnehållet
         </a>
 
+        <!-- Menyknapp för mobil -->
+        <header class="dashboard-header">
+            <button type="button" class="btn btn-outline-dark d-md-none dashboard-menu-button"
+                data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu"
+                aria-label="Öppna meny">
+                <span aria-hidden="true">☰</span>
+            </button>
+        </header>
+
+        <!-- Logotyp för mobil -->
+        <div class="mobile-logo-hero">
+            <%- include("partials/logo") %>
+        </div>
+
         <div class="dashboard-layout">
 
             <%- include("partials/student-sidebar") %>
 
                 <main id="main-content" class="dashboard-main" tabindex="-1">
 
-                    <header class="dashboard-header">
-                        <p class="dashboard-brand">TimeToTalk</p>
+                    <h1 class="h4 mb-4">Välkommen, <%= studentName %>!</h1>
 
-                        <button type="button" class="btn btn-outline-dark d-md-none dashboard-menu-button"
-                            data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu"
-                            aria-controls="student-mobile-menu" aria-label="Öppna meny">
-                            <span aria-hidden="true">☰</span>
-                        </button>
-                    </header>
-
-                    <h1 class="h4 mb-4">Välkommen!</h1>
-
-                    <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
-                        <h2 id="bookings-heading" class="h5 mb-4">
-                            Mina kommande bokningar
-                        </h2>
-
-                        <% if (bookings.length===0) { %>
-
-                            <p>Du har inga kommande bokningar.</p>
-
-                            <% } else { %>
-
-                                <% bookings.forEach(function(booking) { %>
-                                    <% const dateParts=booking.date.split("-").map(Number); const bookingDate=new
-                                        Date(Date.UTC( dateParts[0], dateParts[1] - 1, dateParts[2] )); const
-                                        weekday=bookingDate.toLocaleDateString("sv-SE", { weekday: "short" ,
-                                        timeZone: "UTC" }); const day=bookingDate.toLocaleDateString("sv-SE", {
-                                        day: "numeric" , timeZone: "UTC" }); const
-                                        month=bookingDate.toLocaleDateString("sv-SE", { month: "short" , timeZone: "UTC"
-                                        }); %>
-
-                                        <article class="booking-card d-flex flex-wrap align-items-center gap-3 mb-3">
-                                            <div class="booking-date">
-                                                <span>
-                                                    <%= weekday %>
-                                                </span>
-                                                <strong>
-                                                    <%= day %>
-                                                </strong>
-                                                <span>
-                                                    <%= month %>
-                                                </span>
-                                            </div>
-
-                                            <div class="booking-information">
-                                                <h3 class="h6">
-                                                    <%= booking.activity %>
-                                                </h3>
-
-                                                <p>Lärare: <%= booking.teacher_name %>
-                                                </p>
-
-                                                <p>
-                                                    <time datetime="<%= booking.date %>">
-                                                        <%= booking.date %>
-                                                    </time>
-                                                </p>
-
-                                                <p>
-                                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
-                                                        <%= booking.start_time.slice(0, 5) %>
-                                                    </time>
-                                                    –
-                                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
-                                                        <%= booking.end_time.slice(0, 5) %>
-                                                    </time>
-                                                </p>
-                                            </div>
-
-                                            <a href="/student/bokningar/<%= booking.id %>"
-                                                class="btn btn-outline-dark ms-auto d-inline-flex align-items-center justify-content-center">
-                                                Visa detaljer
-                                            </a>
-                                        </article>
-
-                                        <% }); %>
-
-                                            <% } %>
-                    </section>
-
-                    <section class="dashboard-actions" aria-labelledby="actions-heading">
-                        <h2 id="actions-heading" class="h5 mb-3">
-                            Vad vill du göra?
-                        </h2>
-
-                        <div class="row g-3">
-
-                            <div class="col-6">
-                                <div class="dashboard-action d-flex flex-column
-                     align-items-center justify-content-between
-                     gap-4 h-100 text-center">
-                                    <div class="action-symbol rounded-circle d-flex
-                       align-items-center justify-content-center" aria-hidden="true">
-                                        ▦
-                                    </div>
-
-                                    <!-- Funktionen kopplas in senare -->
-                                    <button type="button" class="btn btn-outline-dark w-100">
-                                        Boka handledning
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="dashboard-action d-flex flex-column
-                     align-items-center justify-content-between
-                     gap-4 h-100 text-center">
-                                    <div class="action-symbol rounded-circle d-flex
-                       align-items-center justify-content-center" aria-hidden="true">
-                                        ✓
-                                    </div>
-
-                                    <!-- Funktionen kopplas in senare -->
-                                    <button type="button" class="btn btn-outline-dark w-100">
-                                        Boka redovisning
-                                    </button>
-                                </div>
-                            </div>
-
+                    <% if (bookingCancelled) { %>
+                        <div class="alert alert-success" role="status">
+                            Din bokning har avbokats.
                         </div>
-                    </section>
+                        <% } %>
+
+                            <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
+
+                                <h2 id="bookings-heading" class="h5 mb-4">
+                                    Mina kommande bokningar
+                                </h2>
+
+                                <% if (bookings.length===0) { %>
+
+                                    <p>Du har inga kommande bokningar.</p>
+
+                                    <% } else { %>
+
+                                        <% bookings.forEach(function(booking) { %>
+                                            <% const dateParts=booking.date.split("-").map(Number); const
+                                                bookingDate=new Date(Date.UTC( dateParts[0], dateParts[1] - 1,
+                                                dateParts[2] )); const weekday=bookingDate.toLocaleDateString( "sv-SE" ,
+                                                { weekday: "short" , timeZone: "UTC" } ); const
+                                                day=bookingDate.toLocaleDateString( "sv-SE" , { day: "numeric" ,
+                                                timeZone: "UTC" } ); const month=bookingDate.toLocaleDateString( "sv-SE"
+                                                , { month: "short" , timeZone: "UTC" } ); %>
+
+                                                <article
+                                                    class="booking-card d-flex flex-wrap align-items-center gap-3 mb-3">
+
+                                                    <div class="booking-date">
+                                                        <span>
+                                                            <%= weekday %>
+                                                        </span>
+                                                        <strong>
+                                                            <%= day %>
+                                                        </strong>
+                                                        <span>
+                                                            <%= month %>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="booking-information">
+                                                        <h3 class="h6">
+                                                            <%= booking.activity %>
+                                                        </h3>
+
+                                                        <p>Lärare: <%= booking.teacher_name %>
+                                                        </p>
+
+                                                        <p>
+                                                            <time datetime="<%= booking.date %>">
+                                                                <%= booking.date %>
+                                                            </time>
+                                                        </p>
+
+                                                        <p>
+                                                            <time
+                                                                datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                                                <%= booking.start_time.slice(0, 5) %>
+                                                            </time>
+                                                            –
+                                                            <time
+                                                                datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                                                <%= booking.end_time.slice(0, 5) %>
+                                                            </time>
+                                                        </p>
+                                                    </div>
+
+                                                    <a href="/student/bokningar/<%= booking.id %>"
+                                                        class="btn btn-outline-dark ms-auto d-inline-flex align-items-center justify-content-center">
+                                                        Visa detaljer
+                                                    </a>
+
+                                                </article>
+                                                <% }); %>
+
+                                                    <% } %>
+
+                            </section>
+
+                            <section class="dashboard-actions" aria-labelledby="actions-heading">
+                                <h2 id="actions-heading" class="h5 mb-3">
+                                    Vad vill du göra?
+                                </h2>
+
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="dashboard-action d-flex flex-column
+                        align-items-center justify-content-between
+                        gap-4 h-100 text-center">
+
+                                            <div class="action-symbol rounded-circle d-flex
+                            align-items-center justify-content-center" aria-hidden="true">
+                                                ▦
+                                            </div>
+
+                                            <!-- Kopplat till lediga tider -->
+                                            <a href="/student/lediga-tider"
+                                                class="btn btn-outline-dark w-100 d-inline-flex align-items-center justify-content-center">
+                                                Boka aktivitet
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
 
                 </main>
+
         </div>
 
         <%- include("partials/scripts") %>
