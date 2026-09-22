@@ -450,7 +450,114 @@ router.get("/teacher/bokningar/:id", requireTeacher, (req, res) => {
     res.render("teacher-booking-details", {
       title: "Bokningsdetaljer",
       booking: booking,
+      query: req.query,
     });
+  });
+});
+
+/* GET: Ändra tid för lärarens bokning */
+router.get("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const teacherId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForTeacher(bookingId, teacherId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte hämta bokningen. Försök igen senare.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("teacher-edit-booking", {
+      title: "Ändra tid",
+      booking: booking
+    });
+  });
+});
+
+/* POST: Spara ändringar av lärarens bokning */
+router.post("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const teacherId = req.session.user.id;
+
+  const { date, start_time, end_time, activity } = req.body;
+
+  const allowedActivities = [
+    "Handledning",
+    "Redovisning",
+    "Muntligt förhör"
+  ];
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  if (!date || !start_time || !end_time || !activity) {
+    return res.status(400).send("Alla fält måste fyllas i.");
+  }
+
+  if (!allowedActivities.includes(activity)) {
+    return res.status(400).send("Ogiltig aktivitet.");
+  }
+
+  db.getBookingDetailsForTeacher(bookingId, teacherId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte hämta bokningen. Försök igen senare.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+
+    if (date < today) {
+      return res.status(400).send("Datumet kan inte vara tidigare än idag.");
+    }
+
+    if (end_time <= start_time) {
+      return res.status(400).send("Sluttiden måste vara senare än starttiden.");
+    }
+
+    const bookingDateTime = new Date(
+      `${booking.date}T${booking.end_time}`
+    );
+
+    if (bookingDateTime <= now) {
+      return res.status(400).send("Bokningen har redan passerat och kan inte ändras.");
+    }
+
+    const availableTimeId = booking.available_time_id;
+
+    db.updateAvailableTime(
+      availableTimeId,
+      date,
+      start_time,
+      end_time,
+      activity,
+      (err) => {
+        if (err) {
+          console.error("Kunde inte uppdatera tiden:", err.message);
+          return res
+            .status(500)
+            .send("Kunde inte spara ändringarna. Försök igen senare.");
+        }
+
+        res.redirect(`/teacher/bokningar/${bookingId}?success=updated`);
+      }
+    );
   });
 });
 

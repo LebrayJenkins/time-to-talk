@@ -591,6 +591,7 @@ function getBookingDetailsForTeacher(bookingId, teacherId, callback) {
   const sql = `
         SELECT
             bookings.id,
+            available_times.id AS available_time_id,
             users.name AS student_name,
             users.email AS student_email,
             available_times.date,
