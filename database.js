@@ -586,6 +586,32 @@ function getBookingDetailsForStudent(bookingId, studentId, callback) {
   db.get(sql, [bookingId, studentId], callback);
 }
 
+/* Hämta en bokning som tillhör den inloggade läraren */
+function getBookingDetailsForTeacher(bookingId, teacherId, callback) {
+  const sql = `
+        SELECT
+            bookings.id,
+            users.name AS student_name,
+            users.email AS student_email,
+            available_times.date,
+            available_times.start_time,
+            available_times.end_time,
+            available_times.activity,
+            teacher.name AS teacher_name
+        FROM bookings
+        JOIN users
+            ON bookings.student_id = users.id
+        JOIN available_times
+            ON bookings.available_time_id = available_times.id
+        JOIN users AS teacher
+            ON available_times.teacher_id = teacher.id
+        WHERE bookings.id = ?
+          AND available_times.teacher_id = ?
+          AND bookings.status = 'bokad'
+    `;
+
+  db.get(sql, [bookingId, teacherId], callback);
+}
 /* Avboka en bokning som tillhör den inloggade eleven */
 function cancelBookingForStudent(bookingId, studentId, callback) {
   // Egen anslutning håller transaktionen separat från andra anrop.
@@ -715,7 +741,6 @@ module.exports = {
   cancelAvailableTime,
   getBookingDetails,
   getBookingDetailsForStudent,
-  getBookingDetails,
-  getBookingDetailsForStudent,
+  getBookingDetailsForTeacher,
   cancelBookingForStudent,
 };
