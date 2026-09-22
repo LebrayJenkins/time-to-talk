@@ -425,4 +425,33 @@ router.post("/student/bokningar/:id/avboka", requireStudent, (req, res) => {
   });
 });
 
+/* GET: Visa detaljer för lärarens bokning */
+router.get("/teacher/bokningar/:id", requireTeacher, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const teacherId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForTeacher(bookingId, teacherId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+
+      return res
+        .status(500)
+        .send("Kunde inte hämta bokningen. Försök igen senare.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("teacher-booking-details", {
+      title: "Bokningsdetaljer",
+      booking: booking,
+    });
+  });
+});
+
 module.exports = router;
