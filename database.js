@@ -201,25 +201,52 @@ function createAvailableTime(
   });
 }
 
-function getAvailableTimes(callback) {
-  const sql = `
-        SELECT
-            available_times.id,
-            available_times.date,
-            available_times.start_time,
-            available_times.end_time,
-            available_times.activity,
-            users.name AS teacher_name
-        FROM available_times
-        JOIN users ON available_times.teacher_id = users.id
-        WHERE available_times.status = 'tillgänglig'
-        ORDER BY available_times.date, available_times.start_time
-    `;
+function getCurrentTimeInSweden() {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Stockholm",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
 
-  db.all(sql, [], (err, rows) => {
+  const value = (type) => parts.find((part) => part.type === type).value;
+
+  return {
+    date: `${value("year")}-${value("month")}-${value("day")}`,
+    time: `${value("hour")}:${value("minute")}`,
+  };
+}
+
+function getAvailableTimes(callback) {
+  const now = getCurrentTimeInSweden();
+
+  const sql = `
+    SELECT
+      available_times.id,
+      available_times.date,
+      available_times.start_time,
+      available_times.end_time,
+      available_times.activity,
+      users.name AS teacher_name
+    FROM available_times
+    JOIN users ON available_times.teacher_id = users.id
+    WHERE available_times.status = 'tillgänglig'
+      AND (
+        available_times.date > ?
+        OR (
+          available_times.date = ?
+          AND substr(available_times.start_time, 1, 5) > ?
+        )
+      )
+    ORDER BY available_times.date, available_times.start_time
+  `;
+
+  db.all(sql, [now.date, now.date, now.time], (err, rows) => {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
     callback(null, rows);
@@ -227,6 +254,8 @@ function getAvailableTimes(callback) {
 }
 
 function getAvailableTimeById(timeId, callback) {
+  const now = getCurrentTimeInSweden();
+
   const sql = `
     SELECT
       available_times.id,
@@ -239,9 +268,16 @@ function getAvailableTimeById(timeId, callback) {
     JOIN users ON available_times.teacher_id = users.id
     WHERE available_times.id = ?
       AND available_times.status = 'tillgänglig'
+      AND (
+        available_times.date > ?
+        OR (
+          available_times.date = ?
+          AND substr(available_times.start_time, 1, 5) > ?
+        )
+      )
   `;
 
-  db.get(sql, [timeId], callback);
+  db.get(sql, [timeId, now.date, now.date, now.time], callback);
 }
 
 function createBooking(availableTimeId, studentId, callback) {
@@ -258,13 +294,22 @@ function createBooking(availableTimeId, studentId, callback) {
         return finish(beginErr);
       }
 
-      // Bara en fortfarande ledig tid får ändras till bokad.
+      const now = getCurrentTimeInSweden();
+
+      // Bara en fortfarande ledig och framtida tid får bokas.
       connection.run(
         `UPDATE available_times
-         SET status = 'bokad'
-         WHERE id = ?
-           AND status = 'tillgänglig'`,
-        [availableTimeId],
+   SET status = 'bokad'
+   WHERE id = ?
+     AND status = 'tillgänglig'
+     AND (
+       date > ?
+       OR (
+         date = ?
+         AND substr(start_time, 1, 5) > ?
+       )
+     )`,
+        [availableTimeId, now.date, now.date, now.time],
         function (updateErr) {
           if (updateErr) {
             return rollback(updateErr);
