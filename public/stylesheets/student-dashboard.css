@@ -16,12 +16,10 @@
 
 /* Mobil: centrerad text och menyknapp till vänster */
 .student-dashboard .dashboard-header {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) 44px;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    margin-bottom: 32px;
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    margin: 0;
 }
 
 .student-dashboard .dashboard-brand {
@@ -100,7 +98,6 @@
 /* Desktop */
 @media (min-width: 768px) {
     .student-dashboard .dashboard-layout {
-        border-top: 32px solid #d9d9d9;
         min-height: 100vh;
     }
 
