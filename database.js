@@ -201,86 +201,160 @@ function createAvailableTime(
   });
 }
 
-function getAvailableTimes(callback) {
-  const sql = `
-        SELECT
-            available_times.id,
-            available_times.date,
-            available_times.start_time,
-            available_times.end_time,
-            available_times.activity,
-            users.name AS teacher_name
-        FROM available_times
-        JOIN users ON available_times.teacher_id = users.id
-        WHERE available_times.status = 'tillgänglig'
-        ORDER BY available_times.date, available_times.start_time
-    `;
+function getCurrentTimeInSweden() {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Stockholm",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
 
-  db.all(sql, [], (err, rows) => {
+  const value = (type) => parts.find((part) => part.type === type).value;
+
+  return {
+    date: `${value("year")}-${value("month")}-${value("day")}`,
+    time: `${value("hour")}:${value("minute")}`,
+  };
+}
+
+function getAvailableTimes(callback) {
+  const now = getCurrentTimeInSweden();
+
+  const sql = `
+    SELECT
+      available_times.id,
+      available_times.date,
+      available_times.start_time,
+      available_times.end_time,
+      available_times.activity,
+      users.name AS teacher_name
+    FROM available_times
+    JOIN users ON available_times.teacher_id = users.id
+    WHERE available_times.status = 'tillgänglig'
+      AND (
+        available_times.date > ?
+        OR (
+          available_times.date = ?
+          AND substr(available_times.start_time, 1, 5) > ?
+        )
+      )
+    ORDER BY available_times.date, available_times.start_time
+  `;
+
+  db.all(sql, [now.date, now.date, now.time], (err, rows) => {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
 
     callback(null, rows);
   });
 }
 
+function getAvailableTimeById(timeId, callback) {
+  const now = getCurrentTimeInSweden();
+
+  const sql = `
+    SELECT
+      available_times.id,
+      available_times.date,
+      available_times.start_time,
+      available_times.end_time,
+      available_times.activity,
+      users.name AS teacher_name
+    FROM available_times
+    JOIN users ON available_times.teacher_id = users.id
+    WHERE available_times.id = ?
+      AND available_times.status = 'tillgänglig'
+      AND (
+        available_times.date > ?
+        OR (
+          available_times.date = ?
+          AND substr(available_times.start_time, 1, 5) > ?
+        )
+      )
+  `;
+
+  db.get(sql, [timeId, now.date, now.date, now.time], callback);
+}
+
 function createBooking(availableTimeId, studentId, callback) {
-  const checkSql = `
-        SELECT status
-        FROM available_times
-        WHERE id = ?
-    `;
-
-  db.get(checkSql, [availableTimeId], (err, time) => {
-    if (err) {
-      callback(err);
-      return;
+  // En egen anslutning håller bokningen samlad i en transaktion.
+  const connection = new sqlite3.Database(dbPath, (openErr) => {
+    if (openErr) {
+      return callback(openErr);
     }
 
-    if (!time) {
-      callback(new Error("Tiden finns inte."));
-      return;
-    }
+    connection.configure("busyTimeout", 5000);
 
-    if (time.status !== "tillgänglig") {
-      callback(new Error("Tiden är inte tillgänglig."));
-      return;
-    }
-
-    const sql = `
-            INSERT INTO bookings (available_time_id, student_id, status)
-            VALUES (?, ?, 'bokad')
-        `;
-
-    db.run(sql, [availableTimeId, studentId], function (err) {
-      if (err) {
-        callback(err);
-        return;
+    connection.run("BEGIN IMMEDIATE TRANSACTION", (beginErr) => {
+      if (beginErr) {
+        return finish(beginErr);
       }
 
-      db.run(
+      const now = getCurrentTimeInSweden();
+
+      // Bara en fortfarande ledig och framtida tid får bokas.
+      connection.run(
         `UPDATE available_times
-                 SET status = 'bokad'
-                 WHERE id = ?`,
-        [availableTimeId],
-        (updateErr) => {
+   SET status = 'bokad'
+   WHERE id = ?
+     AND status = 'tillgänglig'
+     AND (
+       date > ?
+       OR (
+         date = ?
+         AND substr(start_time, 1, 5) > ?
+       )
+     )`,
+        [availableTimeId, now.date, now.date, now.time],
+        function (updateErr) {
           if (updateErr) {
-            callback(updateErr);
-            return;
+            return rollback(updateErr);
           }
 
-          callback(null, {
-            id: this.lastID,
-            availableTimeId: availableTimeId,
-            studentId: studentId,
-            status: "bokad",
-          });
+          if (this.changes === 0) {
+            const error = new Error("Tiden är inte längre ledig.");
+            error.code = "TIME_UNAVAILABLE";
+            return rollback(error);
+          }
+
+          connection.run(
+            `INSERT INTO bookings (available_time_id, student_id, status)
+             VALUES (?, ?, 'bokad')`,
+            [availableTimeId, studentId],
+            function (insertErr) {
+              if (insertErr) {
+                return rollback(insertErr);
+              }
+
+              const bookingId = this.lastID;
+
+              connection.run("COMMIT", (commitErr) => {
+                if (commitErr) {
+                  return rollback(commitErr);
+                }
+
+                finish(null, { id: bookingId });
+              });
+            },
+          );
         },
       );
     });
   });
+
+  function finish(err, booking) {
+    connection.close((closeErr) => {
+      callback(err || closeErr, booking);
+    });
+  }
+
+  function rollback(err) {
+    connection.run("ROLLBACK", () => finish(err));
+  }
 }
 
 function getBookingsForStudent(studentId, callback) {
@@ -744,4 +818,5 @@ module.exports = {
   getBookingDetailsForStudent,
   getBookingDetailsForTeacher,
   cancelBookingForStudent,
+  getAvailableTimeById,
 };

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="sv">
+
+<%- include("partials/head", { title: "Bekräfta din bokning" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-booking-confirmation.css" , "/stylesheets/logo.css" ] }) %>
+
+    <body class="student-booking-confirmation">
+
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
+
+        <div class="booking-details-layout">
+
+            <%- include("partials/student-sidebar") %>
+
+                <main id="main-content" class="booking-details-main" tabindex="-1">
+
+                    <header class="booking-details-header d-md-none">
+                        <button type="button" class="btn btn-outline-dark booking-details-menu"
+                            data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu"
+                            aria-controls="student-mobile-menu" aria-label="Öppna meny">
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                    </header>
+
+                    <div class="mobile-logo-hero">
+                        <%- include("partials/logo") %>
+                    </div>
+
+                    <div class="booking-details-content">
+
+                        <h1 class="h4 mb-4">Bekräfta din bokning</h1>
+
+                        <section class="booking-details-card" aria-labelledby="booking-heading">
+
+                            <div class="booking-details-activity">
+                                <span class="booking-details-icon" aria-hidden="true">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                                        focusable="false">
+                                        <rect x="4" y="5" width="16" height="16" rx="2" />
+                                        <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
+                                    </svg>
+                                </span>
+                                <h2 id="booking-heading" class="h5 mb-0">
+                                    <%= time.activity %>
+                                </h2>
+                            </div>
+
+                            <dl class="booking-details-information">
+                                <dt>Lärare</dt>
+                                <dd>
+                                    <%= time.teacher_name %>
+                                </dd>
+
+                                <dt>Datum</dt>
+                                <dd>
+                                    <time datetime="<%= time.date %>">
+                                        <%= time.date %>
+                                    </time>
+                                </dd>
+
+                                <dt>Tid</dt>
+                                <dd>
+                                    <time datetime="<%= time.date %>T<%= time.start_time %>">
+                                        <%= time.start_time.slice(0, 5) %>
+                                    </time>
+                                    –
+                                    <time datetime="<%= time.date %>T<%= time.end_time %>">
+                                        <%= time.end_time.slice(0, 5) %>
+                                    </time>
+                                </dd>
+                            </dl>
+
+                        </section>
+
+                        <div class="booking-details-actions">
+                            <a href="/student/lediga-tider" class="btn btn-outline-dark">
+                                Tillbaka
+                            </a>
+
+                            <form action="/student/bokningar/bekrafta" method="post">
+                                <input type="hidden" name="timeId" value="<%= time.id %>">
+                                <button type="submit" class="btn btn-dark">
+                                    Bekräfta bokning
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </main>
+
+        </div>
+
+        <%- include("partials/scripts") %>
+
+    </body>
+
+</html>
