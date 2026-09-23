@@ -200,21 +200,25 @@ router.get("/logout", (req, res) => {
 /* GET: Lärardashboard */
 router.get("/teacher/dashboard", requireTeacher, (req, res) => {
   const teacher = req.session.user;
-  db.getTeacherTimes(teacher.id, (err, times) => {
+  db.getBookingsForTeacher(teacher.id, (err, rows) => {
     if (err) {
-      console.error("Kunde inte hämta tider för lärare:", err.message);
-      times = [];
+      console.error("Kunde inte hämta bokningar för lärare:", err.message);
+      rows = [];
     }
+
+    // Filtrera enbart dagens bokade tider
     const now = new Date();
+    const todayIso = now.toISOString().split("T")[0];
+    const todaysBookings = (rows || []).filter((b) => b.date === todayIso);
+
     const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
     const todayFormatted = `${now.getDate()} ${months[now.getMonth()]}`;
 
     res.render("teacher-dashboard", {
-      title: "Lärardashboard",
+      title: "Min översikt",
       teacher: teacher,
-      times: times || [],
+      bookings: todaysBookings,
       todayFormatted: todayFormatted,
-      success: req.query.success === "created",
     });
   });
 });
@@ -225,17 +229,21 @@ router.get("/teacher-dashboard", (req, res) => {
 });
 
 /* GET: Visa sidan där läraren skapar tider */
-router.get("/teacher/tider/skapa", requireTeacher, (req, res) => {
+router.get("/teacher/tider/skapa", (req, res) => {
   res.render("teacher-create-time");
 });
 
 /* POST: Spara lärarens nya tid */
-router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
+router.post("/teacher/tider/skapa", (req, res) => {
   const activity = req.body.activity;
   const date = req.body.date;
   const startTime = req.body.start_time;
   const endTime = req.body.end_time;
-  const teacherId = req.session.user.id;
+
+  console.log("Vald aktivitet:", activity);
+  console.log("Datum:", date);
+  console.log("Starttid:", startTime);
+  console.log("Sluttid:", endTime);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -249,6 +257,8 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
     return res.status(400).send("Sluttiden måste vara efter starttiden.");
   }
 
+  const teacherId = (req.session && req.session.user && req.session.user.id) || 1;
+
   db.createAvailableTime(
     teacherId,
     date,
@@ -261,8 +271,14 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
         return res.status(500).send("Kunde inte spara tiden.");
       }
 
-      console.log("Tid sparad för lärare:", teacherId, time);
-      res.redirect("/teacher/dashboard?success=created");
+      console.log("Tid sparad:", time);
+
+      res.send(`
+        <h1>Tiden är skapad!</h1>
+        <p>Aktivitet: ${time.activity}</p>
+        <p>Datum: ${time.date}</p>
+        <p>Tid: ${time.startTime} - ${time.endTime}</p>
+      `);
     },
   );
 });
