@@ -203,25 +203,55 @@ router.get("/logout", (req, res) => {
 /* GET: Lärardashboard */
 router.get("/teacher/dashboard", requireTeacher, (req, res) => {
   const teacher = req.session.user;
-  db.getBookingsForTeacher(teacher.id, (err, rows) => {
+  db.getTeacherTimes(teacher.id, (err, rows) => {
     if (err) {
-      console.error("Kunde inte hämta bokningar för lärare:", err.message);
+      console.error("Kunde inte hämta tider för lärare:", err.message);
       rows = [];
     }
 
-    // Filtrera enbart dagens bokade tider
     const now = new Date();
-    const todayIso = now.toISOString().split("T")[0];
-    const todaysBookings = (rows || []).filter((b) => b.date === todayIso);
-
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const todayIso = `${year}-${month}-${day}`;
     const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
     const todayFormatted = `${now.getDate()} ${months[now.getMonth()]}`;
 
+    // Läs flashmeddelande från session (visas bara en gång)
+    const success = req.session.flash_success || false;
+    const deleted = req.session.flash_deleted || false;
+    delete req.session.flash_success;
+    delete req.session.flash_deleted;
+
+    // Visa dagens och kommande tider så att skapade tider inte försvinner vid uppdatering
+    const timesToShow = (rows || []).filter((b) => b.date >= todayIso);
+
+    const formattedBookings = timesToShow.map((b) => {
+      let dateFormatted;
+      let isToday = b.date === todayIso;
+      if (isToday) {
+        dateFormatted = "Idag";
+      } else {
+        const parts = b.date.split("-");
+        const monthIdx = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        dateFormatted = `${day} ${months[monthIdx]}`;
+      }
+      return {
+        ...b,
+        dateFormatted,
+        isToday,
+      };
+    });
+
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
     res.render("teacher-dashboard", {
       title: "Min översikt",
       teacher: teacher,
-      bookings: todaysBookings,
+      bookings: formattedBookings,
       todayFormatted: todayFormatted,
+      success: success,
+      deleted: deleted,
     });
   });
 });
@@ -232,12 +262,12 @@ router.get("/teacher-dashboard", (req, res) => {
 });
 
 /* GET: Visa sidan där läraren skapar tider */
-router.get("/teacher/tider/skapa", (req, res) => {
-  res.render("teacher-create-time");
+router.get("/teacher/tider/skapa", requireTeacher, (req, res) => {
+  res.render("teacher-create-time", { error: null });
 });
 
 /* POST: Spara lärarens nya tid */
-router.post("/teacher/tider/skapa", (req, res) => {
+router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
   const activity = req.body.activity;
   const date = req.body.date;
   const startTime = req.body.start_time;
@@ -248,19 +278,31 @@ router.post("/teacher/tider/skapa", (req, res) => {
   console.log("Starttid:", startTime);
   console.log("Sluttid:", endTime);
 
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const today = `${year}-${month}-${day}`;
+
+  if (!activity || !date || !startTime || !endTime) {
+    return res.status(400).render("teacher-create-time", {
+      error: "Vänligen fyll i alla fält.",
+    });
+  }
 
   if (date < today) {
-    return res
-      .status(400)
-      .send("Datumet kan inte vara tidigare än dagens datum.");
+    return res.status(400).render("teacher-create-time", {
+      error: "Datumet kan inte vara tidigare än dagens datum.",
+    });
   }
 
   if (endTime <= startTime) {
-    return res.status(400).send("Sluttiden måste vara efter starttiden.");
+    return res.status(400).render("teacher-create-time", {
+      error: "Sluttiden måste vara efter starttiden.",
+    });
   }
 
-  const teacherId = (req.session && req.session.user && req.session.user.id) || 1;
+  const teacherId = req.session.user.id;
 
   db.createAvailableTime(
     teacherId,
@@ -271,18 +313,58 @@ router.post("/teacher/tider/skapa", (req, res) => {
     (err, time) => {
       if (err) {
         console.error("Fel när tiden skulle sparas:", err.message);
-        return res.status(500).send("Kunde inte spara tiden.");
+        return res.status(500).render("teacher-create-time", {
+          error: "Kunde inte spara tiden. Försök igen.",
+        });
       }
 
-      console.log("Tid sparad:", time);
-
-      res.send(`
-        <h1>Tiden är skapad!</h1>
-        <p>Aktivitet: ${time.activity}</p>
-        <p>Datum: ${time.date}</p>
-        <p>Tid: ${time.startTime} - ${time.endTime}</p>
-      `);
+      console.log("Tid sparad för lärare:", teacherId, time);
+      // Spara flashmeddelande i session – försvinner efter att sidan laddats
+      req.session.flash_success = true;
+      res.redirect("/teacher/dashboard");
     },
+  );
+});
+
+/* POST: Ta bort / avboka tid */
+router.post("/teacher/tider/:id/ta-bort", requireTeacher, (req, res) => {
+  const timeId = parseInt(req.params.id, 10);
+  const teacherId = parseInt(req.session.user.id, 10);
+
+  console.log(`[TA-BORT] Lärare ${teacherId} begär radering av tid ${timeId}`);
+
+  // 1. Ta bort eventuella bokningar först för att tillfredsställa foreign key
+  db.db.run(
+    "DELETE FROM bookings WHERE available_time_id = ?",
+    [timeId],
+    (bookErr) => {
+      if (bookErr) {
+        console.error("[TA-BORT] Kunde inte radera bokningar:", bookErr.message);
+      }
+
+      // 2. Radera tiden permanent från available_times
+      db.db.run(
+        "DELETE FROM available_times WHERE id = ? AND teacher_id = ?",
+        [timeId, teacherId],
+        function (delErr) {
+          if (delErr) {
+            console.error("[TA-BORT] Fel vid DELETE, sätter som avbokad istället:", delErr.message);
+            db.db.run(
+              "UPDATE available_times SET status = 'avbokad' WHERE id = ? AND teacher_id = ?",
+              [timeId, teacherId],
+              () => {
+                req.session.flash_deleted = true;
+                res.redirect("/teacher/dashboard");
+              }
+            );
+            return;
+          }
+          console.log(`[TA-BORT] Tid ${timeId} raderad permanent! Rader ändrade:`, this.changes);
+          req.session.flash_deleted = true;
+          res.redirect("/teacher/dashboard");
+        }
+      );
+    }
   );
 });
 

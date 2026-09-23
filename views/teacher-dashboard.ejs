@@ -45,36 +45,63 @@
                 Hej <%= (typeof teacher !== "undefined" && teacher && teacher.name) ? teacher.name.split(' ')[0] : "Sara" %>! 👋
             </h1>
 
+            <% if (typeof success !== "undefined" && success) { %>
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    Tiden har skapats och lagts till i översikten!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Stäng"></button>
+                </div>
+            <% } %>
+
+            <% if (typeof deleted !== "undefined" && deleted) { %>
+                <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+                    Tiden har tagits bort.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Stäng"></button>
+                </div>
+            <% } %>
+
             <!-- Dagens bokningar -->
-            <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
+            <section id="bokningar" class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
                 
                 <div class="d-flex justify-content-between align-items-center mb-2 pb-2 booking-header">
                     <h2 id="bookings-heading" class="h6 fw-bold mb-0">
-                        Dagens bokningar - <%= typeof todayFormatted !== "undefined" ? todayFormatted : "17 sep" %>
+                        Dagens bokningar - <%= typeof todayFormatted !== "undefined" ? todayFormatted : "" %>
                     </h2>
-                    <button type="button" class="btn btn-calendar" onclick="alert('Kalender öppnas');">
-                        visa kalender
-                    </button>
                 </div>
 
                 <div class="booking-list">
                     <% if (typeof bookings !== "undefined" && bookings && bookings.length > 0) { %>
                         <% bookings.forEach(function(booking, index) { %>
                             <div class="row align-items-center booking-row <%= index < bookings.length - 1 ? 'border-bottom' : '' %>">
-                                <div class="col-4 fw-bold">
-                                    <%= booking.start_time %>-<%= booking.end_time %>
+                                <div class="col-12 col-sm-5 col-md-4 fw-bold mb-1 mb-sm-0 d-flex align-items-center flex-nowrap gap-2">
+                                    <form method="POST" action="/teacher/tider/<%= booking.id %>/ta-bort" class="d-inline-flex align-items-center m-0 p-0">
+                                        <button type="submit" class="btn-delete-time" title="Ta bort tid" aria-label="Ta bort tid">
+                                            &times;
+                                        </button>
+                                    </form>
+                                    <% if (booking.dateFormatted) { %>
+                                        <span class="booking-date-badge text-nowrap"><%= booking.dateFormatted %></span>
+                                    <% } %>
+                                    <span class="booking-time-range text-nowrap"><%= booking.start_time %>-<%= booking.end_time %></span>
                                 </div>
-                                <div class="col-4 fw-bold text-center">
+                                <div class="col-4 col-sm-2 col-md-2 fw-bold text-sm-center">
                                     <%= booking.student_name ? booking.student_name : '-' %>
                                 </div>
-                                <div class="col-4 fw-bold text-end">
+                                <div class="col-4 col-sm-2 col-md-3 fw-bold text-sm-center">
                                     <%= booking.activity || '' %>
+                                </div>
+                                <div class="col-4 col-sm-3 col-md-3 text-end">
+                                    <a href="/teacher/tider/<%= booking.id %>" 
+                                       class="btn btn-booking-details"
+                                       data-booking-id="<%= booking.booking_id || '' %>" 
+                                       data-time-id="<%= booking.id %>">
+                                        visa bokningsdetaljer
+                                    </a>
                                 </div>
                             </div>
                         <% }); %>
                     <% } else { %>
                         <div class="py-3 text-center text-muted fw-semibold">
-                            Inga bokade tider idag
+                            Inga tider eller bokningar än
                         </div>
                     <% } %>
                 </div>

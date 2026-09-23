@@ -404,7 +404,8 @@ function getTeacherTimes(teacherId, callback) {
             available_times.end_time,
             available_times.activity,
             available_times.status,
-            users.name AS student_name
+            users.name AS student_name,
+            bookings.id AS booking_id
         FROM available_times
         LEFT JOIN bookings
             ON available_times.id = bookings.available_time_id
@@ -412,6 +413,7 @@ function getTeacherTimes(teacherId, callback) {
         LEFT JOIN users
             ON bookings.student_id = users.id
         WHERE available_times.teacher_id = ?
+          AND available_times.status != 'avbokad'
         ORDER BY available_times.date, available_times.start_time
     `;
 
