@@ -1,174 +1,165 @@
 <!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", {
-    title: "Välj datum och tid",
-    pageStylesheets: [
-        "/stylesheets/student-available-times.css",
-        "/stylesheets/logo.css"
-    ]
-}) %>
+<%- include("partials/head", { title: "Välj datum och tid" , pageStylesheets:
+    [ "/stylesheets/student-available-times.css" , "/stylesheets/logo.css" ] }) %>
 
-<body class="student-available-times">
+    <body class="student-available-times">
 
-    <a class="skip-link" href="#main-content">
-        Hoppa till huvudinnehållet
-    </a>
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
 
-    <!-- Mobilheader med menyknapp -->
-    <header class="mobile-header">
-        <button
-            type="button"
-            class="btn btn-outline-dark mobile-menu-button d-md-none"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#student-mobile-menu"
-            aria-controls="student-mobile-menu"
-            aria-label="Öppna meny">
-            <span aria-hidden="true">☰</span>
-        </button>
-    </header>
+        <!-- Mobilheader med menyknapp -->
+        <header class="mobile-header">
+            <button type="button" class="btn btn-outline-dark mobile-menu-button d-md-none" data-bs-toggle="offcanvas"
+                data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu" aria-label="Öppna meny">
+                <span aria-hidden="true">☰</span>
+            </button>
+        </header>
 
-    <!-- Logotyp som hero på mobil -->
-    <div class="mobile-logo-hero">
-        <%- include("partials/logo") %>
-    </div>
+        <!-- Logotyp som hero på mobil -->
+        <div class="mobile-logo-hero">
+            <%- include("partials/logo") %>
+        </div>
 
-    <div class="dashboard-layout">
+        <div class="dashboard-layout">
 
-        <!-- Elevmeny -->
-        <%- include("partials/student-sidebar") %>
+            <!-- Elevmeny -->
+            <%- include("partials/student-sidebar") %>
 
-        <!-- Huvudinnehåll -->
-        <main id="main-content" class="dashboard-main" tabindex="-1">
+                <!-- Huvudinnehåll -->
+                <main id="main-content" class="dashboard-main" tabindex="-1">
 
-            <section aria-labelledby="available-times-heading">
+                    <section aria-labelledby="available-times-heading">
 
-                <h1 id="available-times-heading" class="h4 mb-4">
-                    Välj datum och tid
-                </h1>
+                        <h1 id="available-times-heading" class="h4 mb-4">
+                            Välj datum och tid
+                        </h1>
 
-                <!-- Välj aktivitet -->
-                <div class="mb-4">
+                        <% if (typeof bookingError !=="undefined" && bookingError) { %>
+                            <div class="alert alert-warning" role="alert">
+                                Tiden är inte längre ledig. Välj en annan tid.
+                            </div>
+                            <% } %>
 
-                    <label for="activity-filter" class="form-label">
-                        Välj aktivitet
-                    </label>
+                                <!-- Välj aktivitet -->
+                                <div class="mb-4">
 
-                    <select
-                        id="activity-filter"
-                        name="activity"
-                        class="form-select">
+                                    <label for="activity-filter" class="form-label">
+                                        Välj aktivitet
+                                    </label>
 
-                        <option value="">
-                            Alla aktiviteter
-                        </option>
+                                    <select id="activity-filter" name="activity" class="form-select">
 
-                        <option value="Handledning">
-                            Handledning
-                        </option>
+                                        <option value="">
+                                            Alla aktiviteter
+                                        </option>
 
-                        <option value="Redovisning">
-                            Redovisning
-                        </option>
+                                        <option value="Handledning">
+                                            Handledning
+                                        </option>
 
-                        <option value="Muntligt förhör">
-                            Muntligt förhör
-                        </option>
+                                        <option value="Redovisning">
+                                            Redovisning
+                                        </option>
 
-                    </select>
+                                        <option value="Muntligt förhör">
+                                            Muntligt förhör
+                                        </option>
 
-                </div>
+                                    </select>
 
-                <!-- Lediga tider -->
-                <section aria-labelledby="times-heading">
+                                </div>
 
-                    <h2 id="times-heading" class="h5 mb-3">
-                        Välj datum och tid
-                    </h2>
+                                <!-- Lediga tider -->
+                                <section aria-labelledby="times-heading">
 
-                    <% if (availableTimes && availableTimes.length > 0) { %>
+                                    <h2 id="times-heading" class="h5 mb-3">
+                                        Välj datum och tid
+                                    </h2>
 
-                        <div class="available-times-list">
+                                    <% if (availableTimes && availableTimes.length> 0) { %>
 
-                            <% availableTimes.forEach(function(time) { %>
+                                        <div class="available-times-list">
 
-                                <article
-                                        class="available-time-card"
-                                        data-activity="<%= time.activity %>">
+                                            <% availableTimes.forEach(function(time) { %>
 
-                                    <div class="available-time-information">
+                                                <article class="available-time-card"
+                                                    data-activity="<%= time.activity %>">
 
-                                        <p class="available-time-date">
-                                            <strong>
-                                                <%= time.date %>
-                                            </strong>
-                                        </p>
+                                                    <div class="available-time-information">
 
-                                        <p class="available-time-clock">
-                                            <time datetime="<%= time.date %>T<%= time.start_time %>">
-                                                <%= time.start_time %>
-                                            </time>
-                                            –
-                                            <time datetime="<%= time.date %>T<%= time.end_time %>">
-                                                <%= time.end_time %>
-                                            </time>
-                                        </p>
+                                                        <p class="available-time-date">
+                                                            <strong>
+                                                                <%= time.date %>
+                                                            </strong>
+                                                        </p>
 
-                                        <p class="available-time-activity">
-                                            <%= time.activity %>
-                                        </p>
+                                                        <p class="available-time-clock">
+                                                            <time datetime="<%= time.date %>T<%= time.start_time %>">
+                                                                <%= time.start_time %>
+                                                            </time>
+                                                            –
+                                                            <time datetime="<%= time.date %>T<%= time.end_time %>">
+                                                                <%= time.end_time %>
+                                                            </time>
+                                                        </p>
 
-                                        <p class="available-time-teacher">
-                                            Lärare: <%= time.teacher_name %>
-                                        </p>
+                                                        <p class="available-time-activity">
+                                                            <%= time.activity %>
+                                                        </p>
 
-                                    </div>
+                                                        <p class="available-time-teacher">
+                                                            Lärare: <%= time.teacher_name %>
+                                                        </p>
 
-                                    <!-- Själva bokningen kopplas i nästa PBI -->
-                                    <button
-                                        type="button"
-                                        class="btn btn-outline-dark select-time-button"
-                                        data-time-id="<%= time.id %>">
-                                        Välj tid
-                                    </button>
+                                                    </div>
 
-                                </article>
+                                                    <button type="button"
+                                                        class="btn btn-outline-dark select-time-button"
+                                                        data-time-id="<%= time.id %>">
+                                                        Välj tid
+                                                    </button>
 
-                            <% }); %>
+                                                </article>
 
-                        </div>
+                                                <% }); %>
 
-                    <% } else { %>
+                                        </div>
 
-                        <p>
-                            Det finns inga lediga tider just nu.
-                        </p>
+                                        <% } else { %>
 
-                    <% } %>
+                                            <p>
+                                                Det finns inga lediga tider just nu.
+                                            </p>
 
-                </section>
+                                            <% } %>
 
-                <!-- Fortsätt kopplas till bokningsbekräftelsen i nästa PBI -->
-                <div class="available-times-actions">
+                                </section>
 
-                    <button
-                        type="button"
-                        class="btn btn-dark"
-                        disabled>
-                        Fortsätt
-                    </button>
+                                <div class="available-times-actions">
+                                    <form action="/student/bokningar/bekrafta" method="get" id="continue-booking-form">
 
-                </div>
+                                        <input type="hidden" name="timeId" id="selected-time-id">
 
-            </section>
+                                        <button type="submit" class="btn btn-dark" id="continue-booking-button"
+                                            disabled>
+                                            Fortsätt
+                                        </button>
 
-        </main>
+                                    </form>
+                                </div>
 
-    </div>
-    <%- include("partials/scripts") %>
-    <script src="/javascripts/student-available-times.js"></script>
+                    </section>
 
+                </main>
 
-</body>
+        </div>
+
+        <%- include("partials/scripts") %>
+            <script src="/javascripts/student-available-times.js"></script>
+
+    </body>
 
 </html>
