@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="sv">
+
+<%- include("partials/head", { 
+    title: "Ändra tid",
+    pageStylesheets: [
+        "/stylesheets/teacher-sidebar.css",
+        "/stylesheets/teacher-booking-details.css",
+        "/stylesheets/logo.css"
+    ]
+}) %>
+
+<body class="teacher-booking-details">
+
+    <a class="skip-link" href="#main-content">
+        Hoppa till huvudinnehållet
+    </a>
+
+    <div class="booking-details-layout">
+
+        <%- include("partials/teacher-sidebar") %>
+
+        <main id="main-content" class="booking-details-main" tabindex="-1">
+
+            <header class="booking-details-header d-md-none">
+                <button
+                    type="button"
+                    class="btn btn-outline-dark booking-details-menu"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#teacher-mobile-menu"
+                    aria-controls="teacher-mobile-menu"
+                    aria-label="Öppna meny">
+                    <span aria-hidden="true">☰</span>
+                </button>
+            </header>
+
+            <div class="mobile-logo-hero">
+                <%- include("partials/logo") %>
+            </div>
+
+            <div class="booking-details-content">
+
+                <h1 class="h4 mb-4">Ändra tid</h1>
+
+                <section
+                    class="booking-details-card"
+                    aria-labelledby="booking-heading">
+
+                    <h2
+                        id="booking-heading"
+                        class="h5 mb-4">
+                        <%= booking.activity %>
+                    </h2>
+
+                    <form
+                        method="POST"
+                        action="/teacher/bokningar/<%= booking.id %>/andra">
+
+                        <div class="mb-3">
+                            <label
+                                for="date"
+                                class="form-label">
+                                Datum
+                            </label>
+
+                            <input
+                                type="date"
+                                id="date"
+                                name="date"
+                                class="form-control"
+                                value="<%= booking.date %>"
+                                min="<%= new Date().toISOString().split('T')[0] %>"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label
+                                for="start_time"
+                                class="form-label">
+                                Starttid
+                            </label>
+
+                            <input
+                                type="time"
+                                id="start_time"
+                                name="start_time"
+                                class="form-control"
+                                value="<%= booking.start_time.slice(0, 5) %>"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label
+                                for="end_time"
+                                class="form-label">
+                                Sluttid
+                            </label>
+
+                            <input
+                                type="time"
+                                id="end_time"
+                                name="end_time"
+                                class="form-control"
+                                value="<%= booking.end_time.slice(0, 5) %>"
+                                required>
+                        </div>
+
+                       <div class="mb-4">
+                            <label
+                                for="activity"
+                                class="form-label">
+                                Aktivitet
+                            </label>
+
+                            <select
+                                id="activity"
+                                name="activity"
+                                class="form-select"
+                                required
+                            >
+                                <option value="">Välj aktivitet</option>
+
+                                <option
+                                    value="Handledning"
+                                    <%= booking.activity === "Handledning" ? "selected" : "" %>>
+                                    Handledning
+                                </option>
+
+                                <option
+                                    value="Redovisning"
+                                    <%= booking.activity === "Redovisning" ? "selected" : "" %>>
+                                    Redovisning
+                                </option>
+
+                                <option
+                                    value="Muntligt förhör"
+                                    <%= booking.activity === "Muntligt förhör" ? "selected" : "" %>>
+                                    Muntligt förhör
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="booking-details-actions">
+
+                            <button
+                                type="submit"
+                                class="btn btn-dark">
+                                Spara ändringar
+                            </button>
+
+                            <a
+                                href="/teacher/bokningar/<%= booking.id %>"
+                                class="btn btn-outline-dark">
+                                Avbryt
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="sv">
+
+<%- include("partials/head", { title: "Bokningsdetaljer", pageStylesheets: [
+    "/stylesheets/teacher-sidebar.css",
+    "/stylesheets/teacher-booking-details.css",
+    "/stylesheets/logo.css"
+] }) %>
+
+    <body class="teacher-booking-details">
+
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
+
+        <div class="booking-details-layout">
+
+            <%- include("partials/teacher-sidebar") %>
+
+                <main id="main-content" class="booking-details-main" tabindex="-1">
+
+                    <header class="booking-details-header d-md-none">
+                        <button type="button" class="btn btn-outline-dark booking-details-menu"
+                            data-bs-toggle="offcanvas" data-bs-target="#teacher-mobile-menu"
+                            aria-controls="teacher-mobile-menu" aria-label="Öppna meny">
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                    </header>
+
+                    <div class="mobile-logo-hero">
+                        <%- include("partials/logo") %>
+                    </div>
+
+                    <div class="booking-details-content">
+
+                        <h1 class="h4 mb-4">Bokningsdetaljer</h1>
+
+                        <% if (typeof query !== "undefined" && query.success === "updated") { %>
+                            <div
+                                class="alert alert-success"
+                                role="alert">
+                                Bokningen har ändrats.
+                            </div>
+                        <% } %>
+
+                        <section class="booking-details-card" aria-labelledby="booking-heading">
+
+                            <div class="booking-details-activity">
+                                <span class="booking-details-icon" aria-hidden="true">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                        stroke-linejoin="round" focusable="false">
+                                        <rect x="4" y="5" width="16" height="16" rx="2" />
+                                        <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
+                                    </svg>
+                                </span>
+
+                                <h2 id="booking-heading" class="h5 mb-0">
+                                    <%= booking.activity %>
+                                </h2>
+                            </div>
+
+                            <dl class="booking-details-information">
+
+                                <dt>Elev</dt>
+                                <dd>
+                                    <%= booking.student_name %>
+                                </dd>
+
+                                <dt>Datum</dt>
+                                <dd>
+                                    <time datetime="<%= booking.date %>">
+                                        <%= booking.date %>
+                                    </time>
+                                </dd>
+
+                                <dt>Tid</dt>
+                                <dd>
+                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                        <%= booking.start_time.slice(0, 5) %>
+                                    </time>
+                                    –
+                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                        <%= booking.end_time.slice(0, 5) %>
+                                    </time>
+                                </dd>
+
+                            </dl>
+
+                        </section>
+
+                        <div class="booking-details-actions">
+
+                            <a
+                                href="/teacher/bokningar/<%= booking.id %>/andra"
+                                class="btn btn-dark">
+                                Ändra tid
+                            </a>
+
+                            <a
+                                href="/teacher/dashboard"
+                                class="btn btn-dark">
+                                Stäng
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </main>
+
+        </div>
+
+        <%- include("partials/scripts") %>
+
+    </body>
+
+</html>
