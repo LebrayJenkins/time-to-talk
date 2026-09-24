@@ -347,7 +347,7 @@ router.get("/student-dashboard", requireStudent, (req, res) => {
 
     res.render("student-dashboard", {
       title: "Min översikt",
-      bookings: upcomingBookings,
+      bookings: upcomingBookings.slice(0, 1),
       studentName: student.name,
       bookingCancelled: req.query.success === "cancelled",
     });
