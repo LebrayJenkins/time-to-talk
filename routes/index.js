@@ -444,6 +444,25 @@ router.get("/student/bokningar/:id/klar", requireStudent, (req, res) => {
   });
 });
 
+/* GET: Lista elevens egna bokningar */
+router.get("/student/bokningar", requireStudent, (req, res) => {
+  const studentId = req.session.user.id;
+
+  db.getBookingsForStudent(studentId, (err, bookings) => {
+    if (err) {
+      console.error("Kunde inte hämta elevens bokningar:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte hämta dina bokningar. Försök igen senare.");
+    }
+
+    res.render("student-bookings-list", {
+      title: "Mina bokningar",
+      bookings: bookings,
+    });
+  });
+});
+
 /* GET: Visa detaljer för elevens egen bokning */
 router.get("/student/bokningar/:id", requireStudent, (req, res) => {
   const bookingId = Number(req.params.id);

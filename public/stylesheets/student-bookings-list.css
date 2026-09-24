@@ -1,0 +1,97 @@
+.student-bookings-list {
+    position: relative;
+    background-color: #ffffff;
+}
+
+.student-bookings-list .bookings-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.student-bookings-list .bookings-main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 16px;
+}
+
+.student-bookings-list .bookings-header {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+}
+
+.student-bookings-list .bookings-menu {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+.student-bookings-list .bookings-content {
+    max-width: 840px;
+}
+
+.student-bookings-list .bookings-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.student-bookings-list .booking-item {
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+    background-color: #f3f4f5;
+}
+
+.student-bookings-list .booking-information {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+}
+
+.student-bookings-list .booking-information dt {
+    margin-bottom: 4px;
+}
+
+.student-bookings-list .booking-information dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.student-bookings-list .booking-details-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.student-bookings-list .bookings-back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 24px;
+}
+
+.student-bookings-list .bookings-main a:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+    .student-bookings-list .bookings-main {
+        padding: 24px 40px;
+    }
+
+    .student-bookings-list .booking-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .student-bookings-list .booking-information {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

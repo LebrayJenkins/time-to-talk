@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="sv">
+
+<%- include("partials/head", { title: "Mina bokningar" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-bookings-list.css" , "/stylesheets/logo.css" ] }) %>
+
+    <body class="student-bookings-list">
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
+
+        <div class="bookings-layout">
+            <%- include("partials/student-sidebar") %>
+
+                <main id="main-content" class="bookings-main" tabindex="-1">
+                    <header class="bookings-header d-md-none">
+                        <button type="button" class="btn btn-outline-dark bookings-menu" data-bs-toggle="offcanvas"
+                            data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu"
+                            aria-label="Öppna meny">
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                    </header>
+
+                    <div class="mobile-logo-hero">
+                        <%- include("partials/logo") %>
+                    </div>
+
+                    <div class="bookings-content">
+                        <h1 class="h4 mb-4">Mina bokningar</h1>
+
+                        <% if (bookings.length> 0) { %>
+                            <ul class="bookings-list">
+                                <% bookings.forEach(function (booking) { %>
+                                    <li class="booking-item">
+                                        <dl class="booking-information">
+                                            <div>
+                                                <dt>Datum</dt>
+                                                <dd>
+                                                    <time datetime="<%= booking.date %>">
+                                                        <%= booking.date %>
+                                                    </time>
+                                                </dd>
+                                            </div>
+
+                                            <div>
+                                                <dt>Tid</dt>
+                                                <dd>
+                                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                                        <%= booking.start_time.slice(0, 5) %>
+                                                    </time>
+                                                    –
+                                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                                        <%= booking.end_time.slice(0, 5) %>
+                                                    </time>
+                                                </dd>
+                                            </div>
+
+                                            <div>
+                                                <dt>Aktivitet</dt>
+                                                <dd>
+                                                    <%= booking.activity %>
+                                                </dd>
+                                            </div>
+
+                                            <div>
+                                                <dt>Lärare</dt>
+                                                <dd>
+                                                    <%= booking.teacher_name %>
+                                                </dd>
+                                            </div>
+                                        </dl>
+
+                                        <a href="/student/bokningar/<%= booking.id %>"
+                                            class="btn btn-outline-dark booking-details-link">
+                                            Visa detaljer
+                                        </a>
+                                    </li>
+                                    <% }); %>
+                            </ul>
+                            <% } else { %>
+                                <p>Du har inga bokningar just nu.</p>
+                                <a href="/student/lediga-tider" class="btn btn-dark">
+                                    Boka en tid
+                                </a>
+                                <% } %>
+
+                                    <a href="/student-dashboard" class="bookings-back-link">
+                                        Tillbaka till min översikt
+                                    </a>
+                    </div>
+                </main>
+        </div>
+
+        <%- include("partials/scripts") %>
+    </body>
+
+</html>
