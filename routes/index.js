@@ -219,12 +219,10 @@ router.get("/teacher/dashboard", requireTeacher, (req, res) => {
 
     // Läs flashmeddelande från session (visas bara en gång)
     const success = req.session.flash_success || false;
-    const deleted = req.session.flash_deleted || false;
     delete req.session.flash_success;
-    delete req.session.flash_deleted;
 
-    // Visa dagens och kommande tider så att skapade tider inte försvinner vid uppdatering
-    const timesToShow = (rows || []).filter((b) => b.date >= todayIso);
+    // Visa endast dagens bokningar
+    const timesToShow = (rows || []).filter((b) => b.date === todayIso);
 
     const formattedBookings = timesToShow.map((b) => {
       let dateFormatted;
@@ -251,7 +249,6 @@ router.get("/teacher/dashboard", requireTeacher, (req, res) => {
       bookings: formattedBookings,
       todayFormatted: todayFormatted,
       success: success,
-      deleted: deleted,
     });
   });
 });
@@ -323,48 +320,6 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
       req.session.flash_success = true;
       res.redirect("/teacher/dashboard");
     },
-  );
-});
-
-/* POST: Ta bort / avboka tid */
-router.post("/teacher/tider/:id/ta-bort", requireTeacher, (req, res) => {
-  const timeId = parseInt(req.params.id, 10);
-  const teacherId = parseInt(req.session.user.id, 10);
-
-  console.log(`[TA-BORT] Lärare ${teacherId} begär radering av tid ${timeId}`);
-
-  // 1. Ta bort eventuella bokningar först för att tillfredsställa foreign key
-  db.db.run(
-    "DELETE FROM bookings WHERE available_time_id = ?",
-    [timeId],
-    (bookErr) => {
-      if (bookErr) {
-        console.error("[TA-BORT] Kunde inte radera bokningar:", bookErr.message);
-      }
-
-      // 2. Radera tiden permanent från available_times
-      db.db.run(
-        "DELETE FROM available_times WHERE id = ? AND teacher_id = ?",
-        [timeId, teacherId],
-        function (delErr) {
-          if (delErr) {
-            console.error("[TA-BORT] Fel vid DELETE, sätter som avbokad istället:", delErr.message);
-            db.db.run(
-              "UPDATE available_times SET status = 'avbokad' WHERE id = ? AND teacher_id = ?",
-              [timeId, teacherId],
-              () => {
-                req.session.flash_deleted = true;
-                res.redirect("/teacher/dashboard");
-              }
-            );
-            return;
-          }
-          console.log(`[TA-BORT] Tid ${timeId} raderad permanent! Rader ändrade:`, this.changes);
-          req.session.flash_deleted = true;
-          res.redirect("/teacher/dashboard");
-        }
-      );
-    }
   );
 });
 
