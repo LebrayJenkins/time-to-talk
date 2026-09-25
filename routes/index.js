@@ -203,19 +203,27 @@ router.get("/logout", (req, res) => {
 /* GET: Lärardashboard */
 router.get("/teacher/dashboard", requireTeacher, (req, res) => {
   const teacher = req.session.user;
-  db.getTeacherTimes(teacher.id, (err, rows) => {
+  db.getBookingsForTeacher(teacher.id, (err, rows) => {
     if (err) {
-      console.error("Kunde inte hämta tider för lärare:", err.message);
+      console.error("Kunde inte hämta bokningar för lärare:", err.message);
       rows = [];
     }
 
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const todayIso = `${year}-${month}-${day}`;
+    const parts = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Europe/Stockholm",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+
+    const values = Object.fromEntries(
+      parts.map((part) => [part.type, part.value]),
+    );
+
+    const todayIso = `${values.year}-${values.month}-${values.day}`;
     const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
-    const todayFormatted = `${now.getDate()} ${months[now.getMonth()]}`;
+    const monthIdx = parseInt(values.month, 10) - 1;
+    const todayFormatted = `${parseInt(values.day, 10)} ${months[monthIdx]}`;
 
     // Läs flashmeddelande från session (visas bara en gång)
     const success = req.session.flash_success || false;
@@ -225,20 +233,11 @@ router.get("/teacher/dashboard", requireTeacher, (req, res) => {
     const timesToShow = (rows || []).filter((b) => b.date === todayIso);
 
     const formattedBookings = timesToShow.map((b) => {
-      let dateFormatted;
-      let isToday = b.date === todayIso;
-      if (isToday) {
-        dateFormatted = "Idag";
-      } else {
-        const parts = b.date.split("-");
-        const monthIdx = parseInt(parts[1], 10) - 1;
-        const day = parseInt(parts[2], 10);
-        dateFormatted = `${day} ${months[monthIdx]}`;
-      }
       return {
         ...b,
-        dateFormatted,
-        isToday,
+        booking_id: b.id, // ID från bookings-tabellen
+        dateFormatted: "Idag",
+        isToday: true,
       };
     });
 
