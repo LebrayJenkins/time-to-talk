@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", { title: "Bokningsdetaljer" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
-    , "/stylesheets/student-booking-details.css" , "/stylesheets/logo.css" ] }) %>
+<%- include("partials/head", { title: "Bekräfta din bokning" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-booking-confirmation.css" , "/stylesheets/logo.css" ] }) %>
 
-    <body class="student-booking-details">
+    <body class="student-booking-confirmation">
 
         <a class="skip-link" href="#main-content">
             Hoppa till huvudinnehållet
@@ -22,7 +22,6 @@
                             aria-controls="student-mobile-menu" aria-label="Öppna meny">
                             <span aria-hidden="true">☰</span>
                         </button>
-
                     </header>
 
                     <div class="mobile-logo-hero">
@@ -31,7 +30,7 @@
 
                     <div class="booking-details-content">
 
-                        <h1 class="h4 mb-4">Bokningsdetaljer</h1>
+                        <h1 class="h4 mb-4">Bekräfta din bokning</h1>
 
                         <section class="booking-details-card" aria-labelledby="booking-heading">
 
@@ -44,33 +43,32 @@
                                         <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
                                     </svg>
                                 </span>
-
                                 <h2 id="booking-heading" class="h5 mb-0">
-                                    <%= booking.activity %>
+                                    <%= time.activity %>
                                 </h2>
                             </div>
 
                             <dl class="booking-details-information">
                                 <dt>Lärare</dt>
                                 <dd>
-                                    <%= booking.teacher_name %>
+                                    <%= time.teacher_name %>
                                 </dd>
 
                                 <dt>Datum</dt>
                                 <dd>
-                                    <time datetime="<%= booking.date %>">
-                                        <%= booking.date %>
+                                    <time datetime="<%= time.date %>">
+                                        <%= time.date %>
                                     </time>
                                 </dd>
 
                                 <dt>Tid</dt>
                                 <dd>
-                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
-                                        <%= booking.start_time.slice(0, 5) %>
+                                    <time datetime="<%= time.date %>T<%= time.start_time %>">
+                                        <%= time.start_time.slice(0, 5) %>
                                     </time>
                                     –
-                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
-                                        <%= booking.end_time.slice(0, 5) %>
+                                    <time datetime="<%= time.date %>T<%= time.end_time %>">
+                                        <%= time.end_time.slice(0, 5) %>
                                     </time>
                                 </dd>
                             </dl>
@@ -78,14 +76,16 @@
                         </section>
 
                         <div class="booking-details-actions">
-
-                            <a href="/student/bokningar/<%= booking.id %>/avboka" class="btn btn-outline-danger">
-                                Avboka tid
+                            <a href="/student/lediga-tider" class="btn btn-outline-dark">
+                                Tillbaka
                             </a>
 
-                            <a href="/student-dashboard" class="btn btn-dark">
-                                Stäng
-                            </a>
+                            <form action="/student/bokningar/bekrafta" method="post">
+                                <input type="hidden" name="timeId" value="<%= time.id %>">
+                                <button type="submit" class="btn btn-dark">
+                                    Bekräfta bokning
+                                </button>
+                            </form>
                         </div>
 
                     </div>

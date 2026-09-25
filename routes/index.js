@@ -387,7 +387,7 @@ router.get("/student-dashboard", requireStudent, (req, res) => {
 
     res.render("student-dashboard", {
       title: "Min översikt",
-      bookings: upcomingBookings,
+      bookings: upcomingBookings.slice(0, 1),
       studentName: student.name,
       bookingCancelled: req.query.success === "cancelled",
     });
@@ -405,6 +405,100 @@ router.get("/student/lediga-tider", (req, res) => {
     res.render("student-available-times", {
       title: "Välj datum och tid",
       availableTimes: availableTimes,
+      bookingError: req.query.error === "unavailable",
+    });
+  });
+});
+
+/* GET: Visa vald tid innan eleven bekräftar bokningen */
+router.get("/student/bokningar/bekrafta", requireStudent, (req, res) => {
+  const timeId = Number(req.query.timeId);
+
+  if (!Number.isSafeInteger(timeId) || timeId <= 0) {
+    return res.redirect("/student/lediga-tider");
+  }
+
+  db.getAvailableTimeById(timeId, (err, time) => {
+    if (err) {
+      console.error("Kunde inte hämta tiden:", err.message);
+      return res.status(500).send("Kunde inte hämta tiden.");
+    }
+
+    if (!time) {
+      return res.redirect("/student/lediga-tider?error=unavailable");
+    }
+
+    res.render("student-booking-confirmation", {
+      title: "Bekräfta din bokning",
+      time: time,
+    });
+  });
+});
+
+/* POST: Spara elevens bokning */
+router.post("/student/bokningar/bekrafta", requireStudent, (req, res) => {
+  const timeId = Number(req.body.timeId);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(timeId) || timeId <= 0) {
+    return res.status(400).send("Ogiltigt tidsnummer.");
+  }
+
+  db.createBooking(timeId, studentId, (err, booking) => {
+    if (err) {
+      if (err.code === "TIME_UNAVAILABLE") {
+        return res.redirect(303, "/student/lediga-tider?error=unavailable");
+      }
+
+      console.error("Kunde inte skapa bokningen:", err.message);
+      return res.status(500).send("Kunde inte skapa bokningen.");
+    }
+
+    return res.redirect(303, `/student/bokningar/${booking.id}/klar`);
+  });
+});
+
+/* GET: Visa att elevens bokning är klar */
+router.get("/student/bokningar/:id/klar", requireStudent, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForStudent(bookingId, studentId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+      return res.status(500).send("Kunde inte visa bokningen.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("student-booking-success", {
+      title: "Bokningen är klar",
+      booking: booking,
+    });
+  });
+});
+
+/* GET: Lista elevens egna bokningar */
+router.get("/student/bokningar", requireStudent, (req, res) => {
+  const studentId = req.session.user.id;
+
+  db.getBookingsForStudent(studentId, (err, bookings) => {
+    if (err) {
+      console.error("Kunde inte hämta elevens bokningar:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte hämta dina bokningar. Försök igen senare.");
+    }
+
+    res.render("student-bookings-list", {
+      title: "Mina bokningar",
+      bookings: bookings,
     });
   });
 });
@@ -433,6 +527,32 @@ router.get("/student/bokningar/:id", requireStudent, (req, res) => {
 
     res.render("student-booking-details", {
       title: "Bokningsdetaljer",
+      booking: booking,
+    });
+  });
+});
+
+/* GET: Visa bekräftelse innan eleven avbokar */
+router.get("/student/bokningar/:id/avboka", requireStudent, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForStudent(bookingId, studentId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+      return res.status(500).send("Kunde inte visa bokningen.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("student-booking-cancellation-confirmation", {
+      title: "Bekräfta avbokning",
       booking: booking,
     });
   });
@@ -518,7 +638,7 @@ router.get("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
 
     res.render("teacher-edit-booking", {
       title: "Ändra tid",
-      booking: booking
+      booking: booking,
     });
   });
 });
@@ -530,11 +650,7 @@ router.post("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
 
   const { date, start_time, end_time, activity } = req.body;
 
-  const allowedActivities = [
-    "Handledning",
-    "Redovisning",
-    "Muntligt förhör"
-  ];
+  const allowedActivities = ["Handledning", "Redovisning", "Muntligt förhör"];
 
   if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
     return res.status(400).send("Ogiltigt bokningsnummer.");
@@ -571,12 +687,12 @@ router.post("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
       return res.status(400).send("Sluttiden måste vara senare än starttiden.");
     }
 
-    const bookingDateTime = new Date(
-      `${booking.date}T${booking.end_time}`
-    );
+    const bookingDateTime = new Date(`${booking.date}T${booking.end_time}`);
 
     if (bookingDateTime <= now) {
-      return res.status(400).send("Bokningen har redan passerat och kan inte ändras.");
+      return res
+        .status(400)
+        .send("Bokningen har redan passerat och kan inte ändras.");
     }
 
     const availableTimeId = booking.available_time_id;
@@ -596,7 +712,7 @@ router.post("/teacher/bokningar/:id/andra", requireTeacher, (req, res) => {
         }
 
         res.redirect(`/teacher/bokningar/${bookingId}?success=updated`);
-      }
+      },
     );
   });
 });
