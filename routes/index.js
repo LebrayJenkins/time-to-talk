@@ -347,7 +347,7 @@ router.get("/student-dashboard", requireStudent, (req, res) => {
 
     res.render("student-dashboard", {
       title: "Min översikt",
-      bookings: upcomingBookings,
+      bookings: upcomingBookings.slice(0, 1),
       studentName: student.name,
       bookingCancelled: req.query.success === "cancelled",
     });
@@ -440,6 +440,25 @@ router.get("/student/bokningar/:id/klar", requireStudent, (req, res) => {
     res.render("student-booking-success", {
       title: "Bokningen är klar",
       booking: booking,
+    });
+  });
+});
+
+/* GET: Lista elevens egna bokningar */
+router.get("/student/bokningar", requireStudent, (req, res) => {
+  const studentId = req.session.user.id;
+
+  db.getBookingsForStudent(studentId, (err, bookings) => {
+    if (err) {
+      console.error("Kunde inte hämta elevens bokningar:", err.message);
+      return res
+        .status(500)
+        .send("Kunde inte hämta dina bokningar. Försök igen senare.");
+    }
+
+    res.render("student-bookings-list", {
+      title: "Mina bokningar",
+      bookings: bookings,
     });
   });
 });
