@@ -1,0 +1,192 @@
+/* Grund för lärarens dashboard */
+.teacher-dashboard {
+    background-color: #ffffff;
+}
+
+.teacher-dashboard .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.teacher-dashboard .dashboard-main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 16px;
+}
+
+/* Mobil: menyknapp till vänster och centrerad hero/brand */
+.teacher-dashboard .dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    margin-bottom: 24px;
+}
+
+.teacher-dashboard .dashboard-menu-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
+}
+
+.teacher-dashboard .dashboard-menu-button:focus-visible {
+    outline: 3px solid #212529;
+    outline-offset: 3px;
+}
+
+/* Dagens bokningar */
+.teacher-dashboard .dashboard-bookings {
+    max-width: 520px;
+    padding: 20px;
+    background-color: #eeeeee;
+    border-radius: 4px;
+}
+
+.teacher-dashboard .booking-header {
+    border-bottom: 1.5px solid #222222;
+    padding-bottom: 10px;
+}
+
+.teacher-dashboard .booking-date-badge {
+    display: inline-block;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    color: #222222;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-right: 6px;
+    white-space: nowrap;
+}
+
+.teacher-dashboard .btn-booking-details {
+    background-color: #cecece;
+    border: 1px solid #111111;
+    color: #111111;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.teacher-dashboard .btn-booking-details:hover {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+.teacher-dashboard .btn-delete-time {
+    background: transparent;
+    border: none;
+    color: #999999;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0 4px;
+    margin: 0 4px 0 0;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+
+.teacher-dashboard .btn-delete-time:hover {
+    color: #dc3545;
+    background-color: #fee2e2;
+    transform: scale(1.15);
+}
+
+.teacher-dashboard .booking-row {
+    margin: 0;
+    padding: 12px 0;
+    font-size: 0.95rem;
+    border-bottom: 1.5px solid #222222;
+}
+
+.teacher-dashboard .booking-row:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 575.98px) {
+    .teacher-dashboard .booking-row {
+        gap: 6px 0;
+    }
+
+    .teacher-dashboard .btn-booking-details {
+        font-size: 0.72rem;
+        padding: 3px 6px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+    }
+}
+
+/* Snabbåtgärder */
+.teacher-dashboard .dashboard-actions {
+    max-width: 520px;
+}
+
+.teacher-dashboard .dashboard-action {
+    padding: 20px 10px;
+    background-color: #f1f1f1;
+    min-height: 200px;
+    border-radius: 4px;
+}
+
+.teacher-dashboard .action-symbol {
+    width: 56px;
+    height: 56px;
+    background-color: #d9d9d9;
+    font-size: 1.75rem;
+}
+
+.teacher-dashboard .dashboard-action .btn {
+    white-space: normal;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+    .teacher-dashboard .dashboard-layout {
+        min-height: 100vh;
+    }
+
+    .teacher-dashboard .dashboard-main {
+        padding: 24px 40px;
+    }
+
+    .teacher-dashboard .dashboard-header {
+        display: none;
+    }
+
+    .teacher-dashboard .dashboard-bookings {
+        max-width: 760px;
+        padding: 24px 28px;
+    }
+
+    .teacher-dashboard .dashboard-actions {
+        max-width: 760px;
+    }
+
+    .teacher-dashboard .dashboard-action {
+        min-height: 220px;
+        padding: 24px;
+    }
+
+    .teacher-dashboard .booking-row {
+        padding: 14px 4px;
+        font-size: 1rem;
+    }
+
+    .teacher-dashboard .btn-booking-details {
+        font-size: 0.85rem;
+        padding: 5px 12px;
+    }
+}

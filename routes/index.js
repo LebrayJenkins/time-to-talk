@@ -203,34 +203,51 @@ router.get("/logout", (req, res) => {
 /* GET: Lärardashboard */
 router.get("/teacher/dashboard", requireTeacher, (req, res) => {
   const teacher = req.session.user;
-  db.getTeacherTimes(teacher.id, (err, times) => {
+  db.getBookingsForTeacher(teacher.id, (err, rows) => {
     if (err) {
-      console.error("Kunde inte hämta tider för lärare:", err.message);
-      times = [];
+      console.error("Kunde inte hämta bokningar för lärare:", err.message);
+      rows = [];
     }
-    const now = new Date();
-    const months = [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "maj",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "okt",
-      "nov",
-      "dec",
-    ];
-    const todayFormatted = `${now.getDate()} ${months[now.getMonth()]}`;
 
+    const parts = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Europe/Stockholm",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+
+    const values = Object.fromEntries(
+      parts.map((part) => [part.type, part.value]),
+    );
+
+    const todayIso = `${values.year}-${values.month}-${values.day}`;
+    const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+    const monthIdx = parseInt(values.month, 10) - 1;
+    const todayFormatted = `${parseInt(values.day, 10)} ${months[monthIdx]}`;
+
+    // Läs flashmeddelande från session (visas bara en gång)
+    const success = req.session.flash_success || false;
+    delete req.session.flash_success;
+
+    // Visa endast dagens bokningar
+    const timesToShow = (rows || []).filter((b) => b.date === todayIso);
+
+    const formattedBookings = timesToShow.map((b) => {
+      return {
+        ...b,
+        booking_id: b.id, // ID från bookings-tabellen
+        dateFormatted: "Idag",
+        isToday: true,
+      };
+    });
+
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
     res.render("teacher-dashboard", {
-      title: "Lärardashboard",
+      title: "Min översikt",
       teacher: teacher,
-      times: times || [],
+      bookings: formattedBookings,
       todayFormatted: todayFormatted,
-      success: req.query.success === "created",
+      success: success,
     });
   });
 });
@@ -242,7 +259,7 @@ router.get("/teacher-dashboard", (req, res) => {
 
 /* GET: Visa sidan där läraren skapar tider */
 router.get("/teacher/tider/skapa", requireTeacher, (req, res) => {
-  res.render("teacher-create-time");
+  res.render("teacher-create-time", { error: null });
 });
 
 /* POST: Spara lärarens nya tid */
@@ -251,19 +268,37 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
   const date = req.body.date;
   const startTime = req.body.start_time;
   const endTime = req.body.end_time;
-  const teacherId = req.session.user.id;
 
-  const today = new Date().toISOString().split("T")[0];
+  console.log("Vald aktivitet:", activity);
+  console.log("Datum:", date);
+  console.log("Starttid:", startTime);
+  console.log("Sluttid:", endTime);
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const today = `${year}-${month}-${day}`;
+
+  if (!activity || !date || !startTime || !endTime) {
+    return res.status(400).render("teacher-create-time", {
+      error: "Vänligen fyll i alla fält.",
+    });
+  }
 
   if (date < today) {
-    return res
-      .status(400)
-      .send("Datumet kan inte vara tidigare än dagens datum.");
+    return res.status(400).render("teacher-create-time", {
+      error: "Datumet kan inte vara tidigare än dagens datum.",
+    });
   }
 
   if (endTime <= startTime) {
-    return res.status(400).send("Sluttiden måste vara efter starttiden.");
+    return res.status(400).render("teacher-create-time", {
+      error: "Sluttiden måste vara efter starttiden.",
+    });
   }
+
+  const teacherId = req.session.user.id;
 
   db.createAvailableTime(
     teacherId,
@@ -274,11 +309,15 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
     (err, time) => {
       if (err) {
         console.error("Fel när tiden skulle sparas:", err.message);
-        return res.status(500).send("Kunde inte spara tiden.");
+        return res.status(500).render("teacher-create-time", {
+          error: "Kunde inte spara tiden. Försök igen.",
+        });
       }
 
       console.log("Tid sparad för lärare:", teacherId, time);
-      res.redirect("/teacher/dashboard?success=created");
+      // Spara flashmeddelande i session – försvinner efter att sidan laddats
+      req.session.flash_success = true;
+      res.redirect("/teacher/dashboard");
     },
   );
 });
