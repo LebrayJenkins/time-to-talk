@@ -473,6 +473,32 @@ router.get("/student/bokningar/:id", requireStudent, (req, res) => {
   });
 });
 
+/* GET: Visa bekräftelse innan eleven avbokar */
+router.get("/student/bokningar/:id/avboka", requireStudent, (req, res) => {
+  const bookingId = Number(req.params.id);
+  const studentId = req.session.user.id;
+
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).send("Ogiltigt bokningsnummer.");
+  }
+
+  db.getBookingDetailsForStudent(bookingId, studentId, (err, booking) => {
+    if (err) {
+      console.error("Kunde inte hämta bokningen:", err.message);
+      return res.status(500).send("Kunde inte visa bokningen.");
+    }
+
+    if (!booking) {
+      return res.status(404).send("Bokningen hittades inte.");
+    }
+
+    res.render("student-booking-cancellation-confirmation", {
+      title: "Bekräfta avbokning",
+      booking: booking,
+    });
+  });
+});
+
 /* POST: Avboka elevens egen bokning */
 router.post("/student/bokningar/:id/avboka", requireStudent, (req, res) => {
   const bookingId = Number(req.params.id);
