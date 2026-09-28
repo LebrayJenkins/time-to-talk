@@ -45,13 +45,6 @@
                 Hej <%= (typeof teacher !== "undefined" && teacher && teacher.name) ? teacher.name.split(' ')[0] : "Sara" %>! 👋
             </h1>
 
-            <% if (typeof success !== "undefined" && success) { %>
-                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                    Tiden har skapats och lagts till i översikten!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Stäng"></button>
-                </div>
-            <% } %>
-
             <!-- Dagens bokningar -->
             <section id="bokningar" class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
                 

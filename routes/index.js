@@ -225,10 +225,6 @@ router.get("/teacher/dashboard", requireTeacher, (req, res) => {
     const monthIdx = parseInt(values.month, 10) - 1;
     const todayFormatted = `${parseInt(values.day, 10)} ${months[monthIdx]}`;
 
-    // Läs flashmeddelande från session (visas bara en gång)
-    const success = req.session.flash_success || false;
-    delete req.session.flash_success;
-
     // Visa endast dagens bokningar
     const timesToShow = (rows || []).filter((b) => b.date === todayIso);
 
@@ -247,7 +243,6 @@ router.get("/teacher/dashboard", requireTeacher, (req, res) => {
       teacher: teacher,
       bookings: formattedBookings,
       todayFormatted: todayFormatted,
-      success: success,
     });
   });
 });
@@ -315,8 +310,6 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
       }
 
       console.log("Tid sparad för lärare:", teacherId, time);
-      // Spara flashmeddelande i session – försvinner efter att sidan laddats
-      req.session.flash_success = true;
       res.redirect("/teacher/dashboard");
     },
   );
