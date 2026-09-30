@@ -29,15 +29,15 @@
 
         <nav class="nav flex-column gap-2" aria-label="Lärarmeny">
 
-            <a class="nav-link" href="/teacher/dashboard">
+            <a class="nav-link<%= (currentPath === '/teacher/dashboard') ? ' active' : '' %>" href="/teacher/dashboard" <%= (currentPath === '/teacher/dashboard') ? 'aria-current="page"' : '' %>>
                 Min översikt
             </a>
 
-            <a class="nav-link" href="/teacher/dashboard#bokningar">
+            <a class="nav-link<%= (currentPath && currentPath.startsWith('/teacher/dashboard#')) ? ' active' : '' %>" href="/teacher/dashboard#bokningar">
                 Mina bokningar
             </a>
 
-            <a class="nav-link" href="/teacher/tider/skapa">
+            <a class="nav-link<%= (currentPath && currentPath.startsWith('/teacher/tider')) ? ' active' : '' %>" href="/teacher/tider/skapa" <%= (currentPath && currentPath.startsWith('/teacher/tider')) ? 'aria-current="page"' : '' %>>
                 Skapa tider
             </a>
 

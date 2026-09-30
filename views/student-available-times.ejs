@@ -37,10 +37,14 @@
                             Välj datum och tid
                         </h1>
 
-                        <% if (typeof bookingError !=="undefined" && bookingError) { %>
-                            <div class="alert alert-warning" role="alert">
-                                Tiden är inte längre ledig. Välj en annan tid.
-                            </div>
+                            <% if (typeof bookingError !== "undefined" && bookingError) { %>
+                                <div class="alert alert-warning" role="alert">
+                                    <% if (bookingError === "time-conflict") { %>
+                                        Du har redan en bokning som överlappar den här tiden. Välj en annan tid.
+                                    <% } else { %>
+                                        Tiden är inte längre ledig. Välj en annan tid.
+                                    <% } %>
+                                </div>
                             <% } %>
 
                                 <!-- Välj aktivitet -->

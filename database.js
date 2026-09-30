@@ -43,7 +43,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 activity TEXT NOT NULL,
                 status TEXT NOT NULL DEFAULT 'tillgänglig',
                 FOREIGN KEY (teacher_id) REFERENCES users (id)
-            
+
             )
         `,
       (err) => {
@@ -64,7 +64,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     db.run(
       `
             CREATE TABLE IF NOT EXISTS bookings (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,   
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 available_time_id INTEGER NOT NULL,
                 student_id INTEGER NOT NULL,
                 status TEXT NOT NULL DEFAULT 'bokad',
@@ -91,7 +91,7 @@ function seedInitialData(database) {
     if (!err && row && row.count === 0) {
       console.log("Databasen är tom. Skapar grundanvändare...");
       database.run(
-        `INSERT INTO users (name, email, password, role) VALUES 
+        `INSERT INTO users (name, email, password, role) VALUES
                 ('Sara Svensson', 'sara@timetotalk.se', 'larare123', 'teacher'),
                 ('Martin Lindgren', 'martin@timetotalk.se', 'larare123', 'teacher'),
                 ('Mårten Larsson', 'marten@skola.se', 'elev123', 'student')`,
@@ -100,26 +100,6 @@ function seedInitialData(database) {
   });
 }
 
-function createUser(name, email, password, role, callback) {
-  const sql = `
-        INSERT INTO users (name, email, password, role)
-        VALUES (?, ?, ?, ?)
-    `;
-
-  db.run(sql, [name, email, password, role], function (err) {
-    if (err) {
-      callback(err);
-      return;
-    }
-
-    callback(null, {
-      id: this.lastID,
-      name: name,
-      email: email,
-      role: role,
-    });
-  });
-}
 
 function createUser(name, email, password, role, callback) {
   const sql = `
@@ -199,6 +179,38 @@ function createAvailableTime(
       status: "tillgänglig",
     });
   });
+}
+
+function hasOverlappingAvailableTime(
+  teacherId,
+  date,
+  startTime,
+  endTime,
+  callback,
+) {
+  const sql = `
+    SELECT id
+    FROM available_times
+    WHERE teacher_id = ?
+      AND date = ?
+      AND status != 'avbokad'
+      AND start_time < ?
+      AND end_time > ?
+    LIMIT 1
+  `;
+
+  db.get(
+    sql,
+    [teacherId, date, endTime, startTime],
+    (err, row) => {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      callback(null, !!row);
+    },
+  );
 }
 
 function getCurrentTimeInSweden() {
@@ -299,16 +311,16 @@ function createBooking(availableTimeId, studentId, callback) {
       // Bara en fortfarande ledig och framtida tid får bokas.
       connection.run(
         `UPDATE available_times
-   SET status = 'bokad'
-   WHERE id = ?
-     AND status = 'tillgänglig'
-     AND (
-       date > ?
-       OR (
-         date = ?
-         AND substr(start_time, 1, 5) > ?
-       )
-     )`,
+    SET status = 'bokad'
+    WHERE id = ?
+      AND status = 'tillgänglig'
+      AND (
+        date > ?
+        OR (
+          date = ?
+          AND substr(start_time, 1, 5) > ?
+        )
+      )`,
         [availableTimeId, now.date, now.date, now.time],
         function (updateErr) {
           if (updateErr) {
@@ -321,30 +333,85 @@ function createBooking(availableTimeId, studentId, callback) {
             return rollback(error);
           }
 
-          connection.run(
-            `INSERT INTO bookings (available_time_id, student_id, status)
-             VALUES (?, ?, 'bokad')`,
-            [availableTimeId, studentId],
-            function (insertErr) {
-              if (insertErr) {
-                return rollback(insertErr);
+          // Hämta tiden som studenten försöker boka.
+          connection.get(
+            `SELECT available_times.date, available_times.start_time, available_times.end_time
+            FROM available_times
+            WHERE available_times.id = ?`,
+            [availableTimeId],
+            (timeErr, selectedTime) => {
+              if (timeErr) {
+                return rollback(timeErr);
               }
 
-              const bookingId = this.lastID;
+              if (!selectedTime) {
+                const error = new Error("Tiden kunde inte hittas.");
+                error.code = "TIME_NOT_FOUND";
+                return rollback(error);
+              }
 
-              connection.run("COMMIT", (commitErr) => {
-                if (commitErr) {
-                  return rollback(commitErr);
-                }
+              // Kontrollera om studenten redan har en bokning
+              // som överlappar den nya tiden.
+              connection.get(
+                `SELECT bookings.id
+                FROM bookings
+                JOIN available_times
+                  ON bookings.available_time_id = available_times.id
+                WHERE bookings.student_id = ?
+                  AND bookings.status = 'bokad'
+                  AND available_times.date = ?
+                  AND available_times.start_time < ?
+                  AND available_times.end_time > ?
+                LIMIT 1`,
+                [
+                  studentId,
+                  selectedTime.date,
+                  selectedTime.end_time,
+                  selectedTime.start_time,
+                ],
+                (conflictErr, conflict) => {
+                  if (conflictErr) {
+                    return rollback(conflictErr);
+                  }
 
-                finish(null, { id: bookingId });
-              });
+                  if (conflict) {
+                    const error = new Error(
+                      "Du har redan en bokning som överlappar den här tiden.",
+                    );
+                    error.code = "STUDENT_TIME_CONFLICT";
+                    return rollback(error);
+                  }
+
+                  // Ingen konflikt – skapa bokningen.
+                  connection.run(
+                    `INSERT INTO bookings (available_time_id, student_id, status)
+                    VALUES (?, ?, 'bokad')`,
+                    [availableTimeId, studentId],
+                    function (insertErr) {
+                      if (insertErr) {
+                        return rollback(insertErr);
+                      }
+
+                      const bookingId = this.lastID;
+
+                      connection.run("COMMIT", (commitErr) => {
+                        if (commitErr) {
+                          return rollback(commitErr);
+                        }
+
+                        finish(null, { id: bookingId });
+                      });
+                    },
+                  );
+                },
+              );
             },
           );
         },
       );
     });
   });
+
 
   function finish(err, booking) {
     connection.close((closeErr) => {
@@ -808,6 +875,7 @@ module.exports = {
   getUserByEmail,
   deleteUser,
   createAvailableTime,
+  hasOverlappingAvailableTime,
   getAvailableTimes,
   createBooking,
   getBookingsForStudent,

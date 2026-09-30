@@ -84,6 +84,16 @@ router.post("/login", (req, res) => {
       });
     }
 
+    // Kontrollera vald roll
+    if (user.role !== role) {
+      return res.render("login", {
+        title: "Logga in",
+        role: role,
+        email: email,
+        error: "Den valda rollen stämmer inte med ditt konto.",
+      });
+    }
+
     // Skapa inloggad session
     req.session.user = {
       id: user.id,
@@ -254,7 +264,20 @@ router.get("/teacher-dashboard", (req, res) => {
 
 /* GET: Visa sidan där läraren skapar tider */
 router.get("/teacher/tider/skapa", requireTeacher, (req, res) => {
-  res.render("teacher-create-time", { error: null });
+  const success =
+    req.query.success === "created"
+      ? {
+          activity: req.query.activity,
+          date: req.query.date,
+          startTime: req.query.startTime,
+          endTime: req.query.endTime,
+        }
+      : null;
+
+  res.render("teacher-create-time", {
+    error: null,
+    success: success,
+  });
 });
 
 /* POST: Spara lärarens nya tid */
@@ -281,10 +304,43 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
     });
   }
 
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  return res.status(400).render("teacher-create-time", {
+    error: "Ange ett giltigt datum.",
+  });
+}
+
+const [inputYear, inputMonth, inputDay] = date.split("-").map(Number);
+const parsedDate = new Date(
+  Date.UTC(inputYear, inputMonth - 1, inputDay),
+);
+
+if (
+  parsedDate.getUTCFullYear() !== inputYear ||
+  parsedDate.getUTCMonth() !== inputMonth - 1 ||
+  parsedDate.getUTCDate() !== inputDay
+) {
+  return res.status(400).render("teacher-create-time", {
+    error: "Ange ett giltigt datum.",
+  });
+}
+
   if (date < today) {
     return res.status(400).render("teacher-create-time", {
       error: "Datumet kan inte vara tidigare än dagens datum.",
     });
+  }
+
+  if (date === today) {
+    const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes(),
+    ).padStart(2, "0")}`;
+
+    if (startTime <= currentTime) {
+      return res.status(400).render("teacher-create-time", {
+        error: "Starttiden måste vara senare än aktuell tid.",
+      });
+    }
   }
 
   if (endTime <= startTime) {
@@ -295,22 +351,49 @@ router.post("/teacher/tider/skapa", requireTeacher, (req, res) => {
 
   const teacherId = req.session.user.id;
 
-  db.createAvailableTime(
+  db.hasOverlappingAvailableTime(
     teacherId,
     date,
     startTime,
     endTime,
-    activity,
-    (err, time) => {
+    (err, hasOverlap) => {
       if (err) {
-        console.error("Fel när tiden skulle sparas:", err.message);
+        console.error(
+          "Kunde inte kontrollera överlappande tider:",
+          err.message,
+        );
         return res.status(500).render("teacher-create-time", {
-          error: "Kunde inte spara tiden. Försök igen.",
+          error: "Kunde inte kontrollera tiden. Försök igen.",
         });
       }
 
-      console.log("Tid sparad för lärare:", teacherId, time);
-      res.redirect("/teacher/dashboard");
+      if (hasOverlap) {
+        return res.status(400).render("teacher-create-time", {
+          error: "Tiden överlappar med en redan skapad tid.",
+        });
+      }
+
+      db.createAvailableTime(
+        teacherId,
+        date,
+        startTime,
+        endTime,
+        activity,
+        (err, time) => {
+          if (err) {
+            console.error("Fel när tiden skulle sparas:", err.message);
+            return res.status(500).render("teacher-create-time", {
+              error: "Kunde inte spara tiden. Försök igen.",
+            });
+          }
+
+          console.log("Tid sparad för lärare:", teacherId, time);
+
+          res.redirect(
+            `/teacher/tider/skapa?success=created&activity=${encodeURIComponent(activity)}&date=${encodeURIComponent(date)}&startTime=${encodeURIComponent(startTime)}&endTime=${encodeURIComponent(endTime)}`,
+          );
+        },
+      );
     },
   );
 });
@@ -397,7 +480,7 @@ router.get("/student/lediga-tider", (req, res) => {
     res.render("student-available-times", {
       title: "Välj datum och tid",
       availableTimes: availableTimes,
-      bookingError: req.query.error === "unavailable",
+      bookingError: req.query.error || null,
     });
   });
 });
@@ -436,17 +519,25 @@ router.post("/student/bokningar/bekrafta", requireStudent, (req, res) => {
     return res.status(400).send("Ogiltigt tidsnummer.");
   }
 
-  db.createBooking(timeId, studentId, (err, booking) => {
-    if (err) {
-      if (err.code === "TIME_UNAVAILABLE") {
-        return res.redirect(303, "/student/lediga-tider?error=unavailable");
-      }
 
-      console.error("Kunde inte skapa bokningen:", err.message);
-      return res.status(500).send("Kunde inte skapa bokningen.");
+db.createBooking(timeId, studentId, (err, booking) => {
+  if (err) {
+    if (err.code === "TIME_UNAVAILABLE") {
+      return res.redirect(303, "/student/lediga-tider?error=unavailable");
     }
 
-    return res.redirect(303, `/student/bokningar/${booking.id}/klar`);
+    if (err.code === "STUDENT_TIME_CONFLICT") {
+      return res.redirect(
+        303,
+        "/student/lediga-tider?error=time-conflict",
+      );
+    }
+
+    console.error("Kunde inte skapa bokningen:", err.message);
+    return res.status(500).send("Kunde inte skapa bokningen.");
+  }
+
+  return res.redirect(303, `/student/bokningar/${booking.id}/klar`);
   });
 });
 
@@ -487,10 +578,41 @@ router.get("/student/bokningar", requireStudent, (req, res) => {
         .status(500)
         .send("Kunde inte hämta dina bokningar. Försök igen senare.");
     }
+        // Jämför med datum och tid i Sverige.
+    const parts = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Europe/Stockholm",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(new Date());
+
+    const values = Object.fromEntries(
+      parts.map((part) => [part.type, part.value]),
+    );
+
+    const today = `${values.year}-${values.month}-${values.day}`;
+    const currentTime = `${values.hour}:${values.minute}:${values.second}`;
+
+    // Visa framtida bokningar och bokningar som fortfarande pågår.
+    const upcomingBookings = bookings.filter((booking) => {
+      const endTime =
+        booking.end_time.length === 5
+          ? `${booking.end_time}:00`
+          : booking.end_time;
+
+      return (
+        booking.date > today ||
+        (booking.date === today && endTime > currentTime)
+      );
+    });
 
     res.render("student-bookings-list", {
       title: "Mina bokningar",
-      bookings: bookings,
+      bookings: upcomingBookings,
     });
   });
 });
