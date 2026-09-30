@@ -41,24 +41,5 @@ selectButtons.forEach(function (button) {
 
     selectedTimeInput.value = this.dataset.timeId;
     continueButton.disabled = false;
-
-    document.addEventListener("click", function (event) {
-      // Behåll valet när eleven klickar på en tid eller på Fortsätt.
-      if (
-        event.target.closest(".available-time-card, #continue-booking-form")
-      ) {
-        return;
-      }
-
-      timeCards.forEach(function (card) {
-        card.classList.remove("selected");
-        card
-          .querySelector(".select-time-button")
-          .setAttribute("aria-pressed", "false");
-      });
-
-      selectedTimeInput.value = "";
-      continueButton.disabled = true;
-    });
   });
 });

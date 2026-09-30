@@ -11,13 +11,13 @@
         </a>
 
         <!-- Menyknapp för mobil -->
-        <header class="dashboard-header">
+        <div class="dashboard-header">
             <button type="button" class="btn btn-outline-dark d-md-none dashboard-menu-button"
                 data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu"
                 aria-label="Öppna meny">
                 <span aria-hidden="true">☰</span>
             </button>
-        </header>
+        </div>
 
         <!-- Logotyp för mobil -->
         <div class="mobile-logo-hero">
@@ -80,12 +80,6 @@
                                                         </h3>
 
                                                         <p>Lärare: <%= booking.teacher_name %>
-                                                        </p>
-
-                                                        <p>
-                                                            <time datetime="<%= booking.date %>">
-                                                                <%= booking.date %>
-                                                            </time>
                                                         </p>
 
                                                         <p>

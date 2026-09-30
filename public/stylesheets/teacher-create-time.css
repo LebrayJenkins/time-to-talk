@@ -1,16 +1,16 @@
-/* Teacher - skapa ny tid */
-
+/* Lärare – skapa ny tid */
 
 /* ===== Sidlayout ===== */
 
-.page {
+.teacher-create-time .page {
     min-height: 100vh;
     display: flex;
     background-color: #f8fafc;
 }
 
-.main-content {
+.teacher-create-time .main-content {
     flex: 1;
+    min-width: 0;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -18,104 +18,137 @@
     background-color: #f8fafc;
 }
 
-.content-wrapper {
+.teacher-create-time .content-wrapper {
     width: 100%;
     max-width: 500px;
 }
 
-.content-wrapper h1 {
+.teacher-create-time .content-wrapper h1 {
     color: #1e293b;
 }
 
-.form-label {
-    color: #334155;
-    font-weight: 600;
+/* ===== Menyknapp för mobil ===== */
+
+.teacher-create-time .mobile-header {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    margin: 0;
 }
 
-.form-control,
-.form-select {
-    border-color: #e2e8f0;
-    color: #1e293b;
+.teacher-create-time .mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
-.main-content form > .d-flex {
-    justify-content: center !important;
+.teacher-create-time .mobile-menu-button:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
 }
 
 /* ===== Formulär ===== */
 
-form {
+.teacher-create-time form {
     width: 100%;
 }
 
+.teacher-create-time .main-content form>.d-flex {
+    justify-content: center !important;
+}
+
+.teacher-create-time .form-label {
+    color: #334155;
+    font-weight: 600;
+}
+
+.teacher-create-time .form-control,
+.teacher-create-time .form-select {
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.teacher-create-time .form-control:focus,
+.teacher-create-time .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* ===== Tid ===== */
+
+.teacher-create-time .time-legend {
+    position: relative;
+    top: 20px;
+}
 
 /* ===== Knappar ===== */
 
-.button-cancel,
-.button-submit {
-    height: 44px;
+.teacher-create-time .button-cancel,
+.teacher-create-time .button-submit {
+    min-height: 44px;
     min-width: 140px;
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: 600;
     border-radius: 6px;
-    transition: background-color 0.15s ease;
+    white-space: normal;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
 }
 
-.button-cancel {
-    background: #ffffff;
+.teacher-create-time .button-cancel {
+    background-color: #ffffff;
     border: 1px solid #d1d5db;
     color: #1e293b;
 }
 
-.button-submit {
-    background: #2563eb;
+.teacher-create-time .button-submit {
+    background-color: #2563eb;
     border: none;
     color: #ffffff;
 }
 
-.button-cancel:hover {
-    background: #f8fafc;
+.teacher-create-time .button-cancel:hover {
+    background-color: #f8fafc;
     color: #1e293b;
 }
 
-.button-submit:hover {
-    background: #1d4ed8;
+.teacher-create-time .button-submit:hover {
+    background-color: #1d4ed8;
     color: #ffffff;
 }
 
+/* Fokusmarkering för formulärets knappar */
+
+.teacher-create-time .button-cancel:focus-visible,
+.teacher-create-time .button-submit:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
 
 /* ===== Mobil ===== */
 
 @media (max-width: 767.98px) {
-
-    .page {
+    .teacher-create-time .page {
         min-height: auto;
         display: block;
     }
 
-    .main-content {
+    .teacher-create-time .main-content {
         padding: 24px 20px 40px;
     }
 
-    .content-wrapper {
+    .teacher-create-time .content-wrapper {
         width: 100%;
         max-width: 500px;
         margin: 0 auto;
     }
 
-    form {
-        width: 100%;
-    }
-
-    .button-cancel,
-    .button-submit {
+    .teacher-create-time .button-cancel,
+    .teacher-create-time .button-submit {
         flex: 1;
         min-width: 0;
     }
