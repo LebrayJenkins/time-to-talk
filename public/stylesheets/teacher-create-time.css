@@ -5,7 +5,7 @@
 .teacher-create-time .page {
     min-height: 100vh;
     display: flex;
-    background-color: #f8f9fa;
+    background-color: #f8fafc;
 }
 
 .teacher-create-time .main-content {
@@ -15,12 +15,16 @@
     justify-content: center;
     align-items: flex-start;
     padding: 70px 48px;
-    background-color: #f8f9fa;
+    background-color: #f8fafc;
 }
 
 .teacher-create-time .content-wrapper {
     width: 100%;
     max-width: 500px;
+}
+
+.teacher-create-time .content-wrapper h1 {
+    color: #1e293b;
 }
 
 /* ===== Menyknapp för mobil ===== */
@@ -40,7 +44,7 @@
 }
 
 .teacher-create-time .mobile-menu-button:focus-visible {
-    outline: 3px solid #212529;
+    outline: 3px solid #2563eb;
     outline-offset: 3px;
 }
 
@@ -54,6 +58,30 @@
     justify-content: center !important;
 }
 
+.teacher-create-time .form-label {
+    color: #334155;
+    font-weight: 600;
+}
+
+.teacher-create-time .form-control,
+.teacher-create-time .form-select {
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.teacher-create-time .form-control:focus,
+.teacher-create-time .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* ===== Tid ===== */
+
+.teacher-create-time .time-legend {
+    position: relative;
+    top: 20px;
+}
+
 /* ===== Knappar ===== */
 
 .teacher-create-time .button-cancel,
@@ -62,27 +90,34 @@
     min-width: 140px;
     font-family: Arial, sans-serif;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
+    border-radius: 6px;
     white-space: normal;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .teacher-create-time .button-cancel {
-    background-color: #f1f1f1;
-    color: #111111;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #1e293b;
 }
 
 .teacher-create-time .button-submit {
-    background-color: #666666;
+    background-color: #2563eb;
+    border: none;
     color: #ffffff;
 }
 
 .teacher-create-time .button-cancel:hover {
-    background-color: #e2e2e2;
-    color: #111111;
+    background-color: #f8fafc;
+    color: #1e293b;
 }
 
 .teacher-create-time .button-submit:hover {
-    background-color: #555555;
+    background-color: #1d4ed8;
     color: #ffffff;
 }
 
@@ -90,13 +125,8 @@
 
 .teacher-create-time .button-cancel:focus-visible,
 .teacher-create-time .button-submit:focus-visible {
-    outline: 3px solid #212529;
+    outline: 3px solid #2563eb;
     outline-offset: 3px;
-}
-
-.teacher-create-time .time-legend {
-    position: relative;
-    top: 20px;
 }
 
 /* ===== Mobil ===== */

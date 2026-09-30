@@ -33,82 +33,95 @@
 
                         <h1>Skapa ny tid</h1>
 
-                        <% if (typeof error !=="undefined" && error) { %>
-                            <div class="alert alert-danger mb-4" role="alert">
-                                <%= error %>
+                        <% if (typeof success !=="undefined" && success) { %>
+                            <div class="alert alert-success mb-4" role="status">
+                                <strong>
+                                    Tiden har skapats och är tillgänglig för bokning.
+                                </strong>
+                                <br>
+                                <%= success.activity %> –
+                                    <%= success.date %>
+                                        kl.
+                                        <%= success.startTime %>–<%= success.endTime %>
                             </div>
                             <% } %>
 
-                                <form action="/teacher/tider/skapa" method="POST">
-
-                                    <!-- Aktivitet -->
-                                    <div class="mb-4">
-                                        <label for="activity" class="form-label">
-                                            Välj aktivitet
-                                        </label>
-
-                                        <select id="activity" name="activity" class="form-select" required>
-                                            <option value="">Välj aktivitet</option>
-                                            <option value="Handledning">Handledning</option>
-                                            <option value="Redovisning">Redovisning</option>
-                                            <option value="Muntligt förhör">Muntligt förhör</option>
-                                        </select>
+                                <% if (typeof error !=="undefined" && error) { %>
+                                    <div class="alert alert-danger mb-4" role="alert">
+                                        <%= error %>
                                     </div>
+                                    <% } %>
 
-                                    <!-- Datum -->
-                                    <div class="mb-4">
-                                        <label for="date" class="form-label">
-                                            Datum
-                                        </label>
+                                        <form action="/teacher/tider/skapa" method="POST">
 
-                                        <input type="date" id="date" name="date" class="form-control"
-                                            min="<%= new Date().toISOString().split('T')[0] %>" required>
-                                    </div>
-
-                                    <!-- Tid -->
-                                    <fieldset class="mb-4">
-                                        <legend class="form-label fs-6 time-legend">
-                                            Tid
-                                        </legend>
-
-                                        <div class="row g-3">
-
-                                            <div class="col-12 col-sm-6">
-                                                <label for="start_time" class="form-label">
-                                                    Starttid
+                                            <!-- Aktivitet -->
+                                            <div class="mb-4">
+                                                <label for="activity" class="form-label">
+                                                    Välj aktivitet
                                                 </label>
 
-                                                <input type="time" id="start_time" name="start_time"
-                                                    class="form-control" required>
+                                                <select id="activity" name="activity" class="form-select" required>
+                                                    <option value="">Välj aktivitet</option>
+                                                    <option value="Handledning">Handledning</option>
+                                                    <option value="Redovisning">Redovisning</option>
+                                                    <option value="Muntligt förhör">Muntligt förhör</option>
+                                                </select>
                                             </div>
 
-                                            <div class="col-12 col-sm-6">
-                                                <label for="end_time" class="form-label">
-                                                    Sluttid
+                                            <!-- Datum -->
+                                            <div class="mb-4">
+                                                <label for="date" class="form-label">
+                                                    Datum
                                                 </label>
 
-                                                <input type="time" id="end_time" name="end_time" class="form-control"
-                                                    required>
+                                                <input type="date" id="date" name="date" class="form-control"
+                                                    min="<%= new Date().toISOString().split('T')[0] %>" required>
                                             </div>
 
-                                        </div>
-                                    </fieldset>
+                                            <!-- Tid -->
+                                            <fieldset class="mb-4">
+                                                <legend class="form-label fs-6 time-legend">
+                                                    Tid
+                                                </legend>
 
-                                    <!-- Knappar -->
-                                    <div class="d-flex flex-row gap-3 justify-content-center mt-4">
+                                                <div class="row g-3">
 
-                                        <button type="button" class="btn button-cancel"
-                                            onclick="window.location.href='/teacher/dashboard'">
-                                            Avbryt
-                                        </button>
+                                                    <div class="col-12 col-sm-6">
+                                                        <label for="start_time" class="form-label">
+                                                            Starttid
+                                                        </label>
 
-                                        <button type="submit" class="btn button-submit">
-                                            Publicera tid
-                                        </button>
+                                                        <input type="time" id="start_time" name="start_time"
+                                                            class="form-control" required>
+                                                    </div>
 
-                                    </div>
+                                                    <div class="col-12 col-sm-6">
+                                                        <label for="end_time" class="form-label">
+                                                            Sluttid
+                                                        </label>
 
-                                </form>
+                                                        <input type="time" id="end_time" name="end_time"
+                                                            class="form-control" required>
+                                                    </div>
+
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- Knappar -->
+                                            <div class="d-flex flex-row gap-3 justify-content-center mt-4">
+
+                                                <button type="button" class="btn button-cancel"
+                                                    onclick="window.location.href='/teacher/dashboard'">
+                                                    Avbryt
+                                                </button>
+
+                                                <button type="submit" class="btn button-submit">
+                                                    Publicera tid
+                                                </button>
+
+                                            </div>
+
+                                        </form>
 
                     </div>
 

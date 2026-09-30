@@ -26,6 +26,9 @@
     top: 24px;
     left: 16px;
     margin: 0;
+    font-size: 1.25rem;
+    text-align: center;
+    color: #1e293b;
 }
 
 .student-available-times .available-times-menu-button {
@@ -33,10 +36,12 @@
     height: 44px;
     padding: 0;
     font-size: 1.5rem;
+    color: #1e293b;
+    border-color: #e2e8f0;
 }
 
 .student-available-times .available-times-menu-button:focus-visible {
-    outline: 3px solid #212529;
+    outline: 3px solid #2563eb;
     outline-offset: 3px;
 }
 
@@ -49,6 +54,13 @@
 
 .student-available-times .form-select {
     max-width: 100%;
+    border-color: #e2e8f0;
+    color: #1e293b;
+}
+
+.student-available-times .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 
@@ -65,8 +77,11 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px;
-    background-color: #eeeeee;
+    padding: 14px 16px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .available-time-information {
@@ -82,22 +97,43 @@
 
 .available-time-date {
     font-size: 0.9rem;
+    color: #475569;
 }
 
 .available-time-clock {
     font-weight: 700;
+    color: #1e293b;
 }
 
 .available-time-activity {
     font-size: 0.9rem;
+    color: #475569;
 }
 
 .available-time-teacher {
     font-size: 0.85rem;
+    color: #475569;
 }
 
 .select-time-button {
     flex-shrink: 0;
+}
+
+.select-time-button .btn,
+.select-time-button .btn-outline-dark {
+    background-color: #2563eb;
+    border: none;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 6px 14px;
+    transition: background-color 0.15s ease;
+}
+
+.select-time-button .btn:hover,
+.select-time-button .btn-outline-dark:hover {
+    background-color: #1d4ed8;
+    color: #ffffff;
 }
 
 
@@ -109,6 +145,17 @@
 
 .available-times-actions .btn {
     width: 100%;
+    background-color: #2563eb;
+    border: none;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.15s ease;
+}
+
+.available-times-actions .btn:hover {
+    background-color: #1d4ed8;
+    color: #ffffff;
 }
 
 
@@ -118,6 +165,17 @@
 
     .student-available-times .dashboard-main {
         padding: 24px 40px;
+    }
+
+    .student-available-times .dashboard-header {
+        display: block;
+        min-height: auto;
+    }
+
+    .student-available-times .dashboard-brand {
+        max-width: 350px;
+        background-color: transparent;
+        color: #1e293b;
     }
 }
 
@@ -133,6 +191,7 @@
         align-self: center;
     }
 }
+
 
 /* ===== Vald tid – mobil och desktop ===== */
 
