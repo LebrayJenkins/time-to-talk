@@ -3,15 +3,15 @@
 /* Grund */
 .student-sidebar {
     --bs-offcanvas-width: 240px;
-    --bs-offcanvas-bg: #4a4a4a;
+    --bs-offcanvas-bg: #0f172a;
     max-width: 100%;
     color: #ffffff;
-    background-color: #4a4a4a !important;
+    background-color: #0f172a !important;
 }
 
 .student-sidebar .offcanvas-body {
     gap: 24px;
-    background-color: #4a4a4a;
+    background-color: #0f172a;
 }
 
 /* Menylänkar */
@@ -19,22 +19,34 @@
     display: flex;
     align-items: center;
     min-height: 44px;
-    padding: 12px;
-    color: #ffffff;
+    padding: 12px 14px;
+    color: #cbd5e1;
     background-color: transparent;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Muspekare och tangentbord: grå bakgrund */
+/* Muspekare och tangentbord: */
 .student-sidebar .nav-link:hover,
 .student-sidebar .nav-link:focus-visible {
-    background-color: #5f5f5f;
+    background-color: rgba(255, 255, 255, 0.12);
     color: #ffffff;
 }
 
-/* Vit fokusram för länkar och knappar */
+.student-sidebar .nav-link.active,
+.student-sidebar .nav-link[aria-current="page"] {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-left: 4px solid #93c5fd;
+    padding-left: 10px;
+    font-weight: 700;
+}
+
+/* Vit fokusram för länkar och knappar i mörk sidebar */
 .student-sidebar a:focus-visible,
 .student-sidebar button:focus-visible {
-    outline: 3px solid #ffffff;
+    outline: 3px solid #60a5fa;
     outline-offset: 3px;
 }
 
@@ -74,18 +86,19 @@
 /* Logga ut */
 .student-sidebar .btn-outline-dark {
     margin-top: auto;
-    color: #ffffff;
-    border-color: #ffffff;
+    color: #cbd5e1;
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .student-sidebar .btn-outline-dark:hover {
-    background-color: #ffffff;
-    color: #4a4a4a;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Tab: mörk bakgrund på Logga ut */
 .student-sidebar .btn-outline-dark:focus-visible {
-    background-color: #212529;
+    background-color: #1e293b;
     color: #ffffff;
 }
 
@@ -97,6 +110,7 @@
         width: 240px;
         flex-shrink: 0;
         align-self: stretch;
+        background-color: #0f172a !important;
     }
 
     .student-sidebar .offcanvas-body {

@@ -1,6 +1,6 @@
 /* Grund för elevens dashboard */
 .student-dashboard {
-    background-color: #ffffff;
+    background-color: #f8fafc;
 }
 
 .student-dashboard .dashboard-layout {
@@ -28,6 +28,7 @@
     margin: 0;
     font-size: 1.25rem;
     text-align: center;
+    color: #1e293b;
 }
 
 .student-dashboard .dashboard-menu-button {
@@ -37,10 +38,12 @@
     height: 44px;
     padding: 0;
     font-size: 1.5rem;
+    color: #1e293b;
+    border-color: #e2e8f0;
 }
 
 .student-dashboard .dashboard-menu-button:focus-visible {
-    outline: 3px solid #212529;
+    outline: 3px solid #2563eb;
     outline-offset: 3px;
 }
 
@@ -48,7 +51,10 @@
 .student-dashboard .dashboard-bookings {
     max-width: 520px;
     padding: 20px;
-    background-color: #eeeeee;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .student-dashboard .booking-date {
@@ -58,11 +64,14 @@
     justify-content: center;
     min-width: 64px;
     padding: 10px;
-    background-color: #d9d9d9;
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-radius: 6px;
 }
 
 .student-dashboard .booking-date strong {
     font-size: 1.5rem;
+    color: #1d4ed8;
 }
 
 .student-dashboard .booking-information {
@@ -72,6 +81,29 @@
 
 .student-dashboard .booking-information p {
     margin-bottom: 4px;
+    color: #1e293b;
+}
+
+.student-dashboard .dashboard-bookings .btn,
+.student-dashboard .booking-card .btn,
+.student-dashboard .booking-card .btn-outline-dark {
+    background-color: #2563eb;
+    border: none;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+}
+
+.student-dashboard .dashboard-bookings .btn:hover,
+.student-dashboard .booking-card .btn:hover,
+.student-dashboard .booking-card .btn-outline-dark:hover {
+    background-color: #1d4ed8;
+    color: #ffffff;
 }
 
 /* Bokningsalternativ */
@@ -81,18 +113,35 @@
 
 .student-dashboard .dashboard-action {
     padding: 20px 10px;
-    background-color: #f1f1f1;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .student-dashboard .action-symbol {
     width: 56px;
     height: 56px;
-    background-color: #d9d9d9;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border-radius: 50%;
     font-size: 1.75rem;
 }
 
-.student-dashboard .dashboard-action .btn {
+.student-dashboard .dashboard-action .btn,
+.student-dashboard .dashboard-action .btn-outline-dark {
     white-space: normal;
+    background-color: #2563eb;
+    border: none;
+    color: #ffffff;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.student-dashboard .dashboard-action .btn:hover,
+.student-dashboard .dashboard-action .btn-outline-dark:hover {
+    background-color: #1d4ed8;
+    color: #ffffff;
 }
 
 /* Desktop */
@@ -112,7 +161,8 @@
 
     .student-dashboard .dashboard-brand {
         max-width: 350px;
-        background-color: #d9d9d9;
+        background-color: transparent;
+        color: #1e293b;
     }
 
     .student-dashboard .dashboard-action {
