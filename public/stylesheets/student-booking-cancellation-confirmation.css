@@ -68,7 +68,7 @@
 .student-booking-cancellation-confirmation .booking-details-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
     margin-top: 24px;
 }

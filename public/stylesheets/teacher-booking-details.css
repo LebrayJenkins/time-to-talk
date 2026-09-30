@@ -92,7 +92,7 @@
 .teacher-booking-details .booking-details-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
     margin-top: 24px;
 }
@@ -110,14 +110,20 @@
 .teacher-booking-details .booking-details-actions .btn-outline-dark,
 .teacher-booking-details .booking-details-actions .btn-secondary {
     background-color: #ffffff;
-    border: 1px solid #d1d5db;
-    color: #1e293b;
+    border: 1px solid #212529;
+    color: #212529;
+    font-weight: 400;
 }
 
 .teacher-booking-details .booking-details-actions .btn-outline-dark:hover,
-.teacher-booking-details .booking-details-actions .btn-secondary:hover {
-    background-color: #f8fafc;
-    color: #1e293b;
+.teacher-booking-details .booking-details-actions .btn-outline-dark:focus-visible,
+.teacher-booking-details .booking-details-actions .btn-outline-dark:active,
+.teacher-booking-details .booking-details-actions .btn-secondary:hover,
+.teacher-booking-details .booking-details-actions .btn-secondary:focus-visible,
+.teacher-booking-details .booking-details-actions .btn-secondary:active {
+    background-color: #212529;
+    border-color: #212529;
+    color: #ffffff;
 }
 
 .teacher-booking-details .booking-details-actions .btn-dark,

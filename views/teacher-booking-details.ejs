@@ -1,11 +1,8 @@
 <!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", { title: "Bokningsdetaljer", pageStylesheets: [
-    "/stylesheets/teacher-sidebar.css",
-    "/stylesheets/teacher-booking-details.css",
-    "/stylesheets/logo.css"
-] }) %>
+<%- include("partials/head", { title: "Bokningsdetaljer" , pageStylesheets: [ "/stylesheets/teacher-sidebar.css"
+    , "/stylesheets/teacher-booking-details.css" , "/stylesheets/logo.css" ] }) %>
 
     <body class="teacher-booking-details">
 
@@ -33,77 +30,71 @@
 
                     <div class="booking-details-content">
 
-                        <h1 class="h4 mb-4">Bokningsdetaljer</h1>
+                        <h1 class="h4 mb-4 fw-bold">Bokningsdetaljer</h1>
 
-                        <% if (typeof query !== "undefined" && query.success === "updated") { %>
-                            <div
-                                class="alert alert-success"
-                                role="alert">
+                        <% if (typeof query !=="undefined" && query.success==="updated" ) { %>
+                            <div class="alert alert-success" role="alert">
                                 Bokningen har ändrats.
                             </div>
-                        <% } %>
+                            <% } %>
 
-                        <section class="booking-details-card" aria-labelledby="booking-heading">
+                                <section class="booking-details-card" aria-labelledby="booking-heading">
 
-                            <div class="booking-details-activity">
-                                <span class="booking-details-icon" aria-hidden="true">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                                        stroke-linejoin="round" focusable="false">
-                                        <rect x="4" y="5" width="16" height="16" rx="2" />
-                                        <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
-                                    </svg>
-                                </span>
+                                    <div class="booking-details-activity">
+                                        <span class="booking-details-icon" aria-hidden="true">
+                                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                                stroke-linejoin="round" focusable="false">
+                                                <rect x="4" y="5" width="16" height="16" rx="2" />
+                                                <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
+                                            </svg>
+                                        </span>
 
-                                <h2 id="booking-heading" class="h5 mb-0">
-                                    <%= booking.activity %>
-                                </h2>
-                            </div>
+                                        <h2 id="booking-heading" class="h5 mb-0 fw-bold">
+                                            <%= booking.activity %>
+                                        </h2>
+                                    </div>
 
-                            <dl class="booking-details-information">
+                                    <dl class="booking-details-information">
 
-                                <dt>Elev</dt>
-                                <dd>
-                                    <%= booking.student_name %>
-                                </dd>
+                                        <dt class="fw-bold">Elev</dt>
+                                        <dd class="fw-normal">
+                                            <%= booking.student_name %>
+                                        </dd>
 
-                                <dt>Datum</dt>
-                                <dd>
-                                    <time datetime="<%= booking.date %>">
-                                        <%= booking.date %>
-                                    </time>
-                                </dd>
+                                        <dt class="fw-bold">Datum</dt>
+                                        <dd class="fw-normal">
+                                            <time datetime="<%= booking.date %>">
+                                                <%= booking.date %>
+                                            </time>
+                                        </dd>
 
-                                <dt>Tid</dt>
-                                <dd>
-                                    <time datetime="<%= booking.date %>T<%= booking.start_time %>">
-                                        <%= booking.start_time.slice(0, 5) %>
-                                    </time>
-                                    –
-                                    <time datetime="<%= booking.date %>T<%= booking.end_time %>">
-                                        <%= booking.end_time.slice(0, 5) %>
-                                    </time>
-                                </dd>
+                                        <dt class="fw-bold">Tid</dt>
+                                        <dd class="fw-normal">
+                                            <time datetime="<%= booking.date %>T<%= booking.start_time %>">
+                                                <%= booking.start_time.slice(0, 5) %>
+                                            </time>
+                                            –
+                                            <time datetime="<%= booking.date %>T<%= booking.end_time %>">
+                                                <%= booking.end_time.slice(0, 5) %>
+                                            </time>
+                                        </dd>
 
-                            </dl>
+                                    </dl>
 
-                        </section>
+                                </section>
 
-                        <div class="booking-details-actions">
+                                <div class="booking-details-actions">
 
-                            <a
-                                href="/teacher/bokningar/<%= booking.id %>/andra"
-                                class="btn btn-dark">
-                                Ändra tid
-                            </a>
+                                    <a href="/teacher/bokningar/<%= booking.id %>/andra" class="btn btn-outline-dark">
+                                        Ändra tid
+                                    </a>
 
-                            <a
-                                href="/teacher/dashboard"
-                                class="btn btn-dark">
-                                Stäng
-                            </a>
+                                    <a href="/teacher/dashboard" class="btn btn-dark">
+                                        Stäng
+                                    </a>
 
-                        </div>
+                                </div>
 
                     </div>
 

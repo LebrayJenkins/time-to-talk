@@ -30,7 +30,7 @@
                 <main id="main-content" class="dashboard-main" tabindex="-1">
 
                     <!-- Välkomsthälsning -->
-                    <h1 class="h4 mb-4">
+                    <h1 class="h4 mb-4 fw-bold">
                         Välkommen, <%= teacher.name %>!
                     </h1>
 
@@ -54,18 +54,25 @@
 
                                     <div class="row align-items-center booking-row gy-2">
 
-                                        <div class="col-12 col-md-3 fw-bold">
-                                            <span>
+                                        <div class="col-6 col-md-3 text-start">
+                                            <div class="fw-bold">Tid</div>
+                                            <div class="fw-normal">
                                                 <%= booking.start_time %>–<%= booking.end_time %>
-                                            </span>
+                                            </div>
                                         </div>
 
-                                        <div class="col-6 col-md-3 fw-bold text-md-center">
-                                            <%= booking.student_name || "-" %>
+                                        <div class="col-6 col-md-3 text-start">
+                                            <div class="fw-bold">Elev</div>
+                                            <div class="fw-normal">
+                                                <%= booking.student_name || "-" %>
+                                            </div>
                                         </div>
 
-                                        <div class="col-6 col-md-3 fw-bold text-md-center">
-                                            <%= booking.activity || "" %>
+                                        <div class="col-12 col-md-3 text-start">
+                                            <div class="fw-bold">Aktivitet</div>
+                                            <div class="fw-normal">
+                                                <%= booking.activity || "" %>
+                                            </div>
                                         </div>
 
                                         <div class="col-12 col-md-3 text-md-end">
@@ -76,7 +83,6 @@
                                         </div>
 
                                     </div>
-
                                     <% }); %>
 
                                         <% } else { %>
@@ -94,7 +100,7 @@
                     <!-- Snabbåtgärder -->
                     <section class="dashboard-actions" aria-labelledby="actions-heading">
 
-                        <h2 id="actions-heading" class="h5 mb-3">
+                        <h2 id="actions-heading" class="h5 mb-3 fw-bold">
                             Snabbåtgärder
                         </h2>
 
