@@ -33,24 +33,24 @@
 
                     <section aria-labelledby="available-times-heading">
 
-                        <h1 id="available-times-heading" class="h4 mb-4">
+                        <h1 id="available-times-heading" class="h4 mb-4 fw-bold">
                             Välj datum och tid
                         </h1>
 
-                            <% if (typeof bookingError !== "undefined" && bookingError) { %>
-                                <div class="alert alert-warning" role="alert">
-                                    <% if (bookingError === "time-conflict") { %>
-                                        Du har redan en bokning som överlappar den här tiden. Välj en annan tid.
+                        <% if (typeof bookingError !=="undefined" && bookingError) { %>
+                            <div class="alert alert-warning" role="alert">
+                                <% if (bookingError==="time-conflict" ) { %>
+                                    Du har redan en bokning som överlappar den här tiden. Välj en annan tid.
                                     <% } else { %>
                                         Tiden är inte längre ledig. Välj en annan tid.
-                                    <% } %>
-                                </div>
+                                        <% } %>
+                            </div>
                             <% } %>
 
                                 <!-- Välj aktivitet -->
                                 <div class="mb-4">
 
-                                    <label for="activity-filter" class="form-label">
+                                    <label for="activity-filter" class="form-label h5 fw-bold">
                                         Välj aktivitet
                                     </label>
 
@@ -79,7 +79,7 @@
                                 <!-- Lediga tider -->
                                 <section aria-labelledby="times-heading">
 
-                                    <h2 id="times-heading" class="h5 mb-3">
+                                    <h2 id="times-heading" class="h5 mb-3 fw-bold">
                                         Lediga tider
                                     </h2>
 
@@ -94,28 +94,30 @@
 
                                                     <div class="available-time-information">
 
-                                                        <p class="available-time-date">
-                                                            <strong>
-                                                                <%= time.date %>
-                                                            </strong>
-                                                        </p>
-
-                                                        <p class="available-time-clock">
-                                                            <time datetime="<%= time.date %>T<%= time.start_time %>">
-                                                                <%= time.start_time %>
-                                                            </time>
-                                                            –
-                                                            <time datetime="<%= time.date %>T<%= time.end_time %>">
-                                                                <%= time.end_time %>
-                                                            </time>
-                                                        </p>
-
-                                                        <p class="available-time-activity">
+                                                        <p class="available-time-activity h6 fw-bold">
                                                             <%= time.activity %>
                                                         </p>
 
-                                                        <p class="available-time-teacher">
+                                                        <p class="available-time-teacher fw-normal">
                                                             Lärare: <%= time.teacher_name %>
+                                                        </p>
+
+                                                        <p class="available-time-date fw-normal">
+                                                            Datum:
+                                                            <time datetime="<%= time.date %>">
+                                                                <%= time.date %>
+                                                            </time>
+                                                        </p>
+
+                                                        <p class="available-time-clock fw-normal">
+                                                            Tid:
+                                                            <time datetime="<%= time.date %>T<%= time.start_time %>">
+                                                                <%= time.start_time.slice(0, 5) %>
+                                                            </time>
+                                                            –
+                                                            <time datetime="<%= time.date %>T<%= time.end_time %>">
+                                                                <%= time.end_time.slice(0, 5) %>
+                                                            </time>
                                                         </p>
 
                                                     </div>

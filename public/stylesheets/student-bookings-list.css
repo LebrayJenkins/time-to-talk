@@ -59,14 +59,14 @@
 .student-bookings-list .booking-information dt {
     margin-bottom: 4px;
     color: #475569;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .student-bookings-list .booking-information dd {
     margin: 0;
     overflow-wrap: anywhere;
     color: #1e293b;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .student-bookings-list .booking-details-link {
@@ -74,18 +74,21 @@
     align-items: center;
     justify-content: center;
     min-height: 44px;
-    background-color: #2563eb;
-    border: none;
-    color: #ffffff;
+    background-color: #ffffff;
+    border: 1px solid #212529;
+    color: #212529;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 6px 16px;
     text-decoration: none;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.student-bookings-list .booking-details-link:hover {
-    background-color: #1d4ed8;
+.student-bookings-list .booking-details-link:hover,
+.student-bookings-list .booking-details-link:focus-visible,
+.student-bookings-list .booking-details-link:active {
+    background-color: #212529;
+    border-color: #212529;
     color: #ffffff;
 }
 
@@ -95,8 +98,9 @@
     min-height: 44px;
     margin-top: 24px;
     color: #1d4ed8;
-    text-decoration: none;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 400;
+    text-decoration: underline;
 }
 
 .student-bookings-list .bookings-back-link:hover {

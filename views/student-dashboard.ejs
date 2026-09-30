@@ -30,7 +30,7 @@
 
                 <main id="main-content" class="dashboard-main" tabindex="-1">
 
-                    <h1 class="h4 mb-4">Välkommen, <%= studentName %>!</h1>
+                    <h1 class="h4 mb-4 fw-bold">Välkommen, <%= studentName %>!</h1>
 
                     <% if (bookingCancelled) { %>
                         <div class="alert alert-success" role="status">
@@ -40,7 +40,7 @@
 
                             <section class="dashboard-bookings mb-4" aria-labelledby="bookings-heading">
 
-                                <h2 id="bookings-heading" class="h5 mb-4">
+                                <h2 id="bookings-heading" class="h5 mb-4 fw-bold">
                                     Mina kommande bokningar
                                 </h2>
 
@@ -75,7 +75,7 @@
                                                     </div>
 
                                                     <div class="booking-information">
-                                                        <h3 class="h6">
+                                                        <h3 class="h6 fw-bold">
                                                             <%= booking.activity %>
                                                         </h3>
 
@@ -108,7 +108,7 @@
                             </section>
 
                             <section class="dashboard-actions" aria-labelledby="actions-heading">
-                                <h2 id="actions-heading" class="h5 mb-3">
+                                <h2 id="actions-heading" class="h5 mb-3 fw-bold">
                                     Vad vill du göra?
                                 </h2>
 
