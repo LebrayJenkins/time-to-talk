@@ -21,33 +21,21 @@
 
 /* ===== Header ===== */
 
-.student-available-times .dashboard-header {
-    display: grid;
-    grid-template-columns: 44px minmax(0, 1fr) 44px;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    margin-bottom: 32px;
-}
-
-.student-available-times .dashboard-brand {
-    grid-column: 2;
-    grid-row: 1;
+.student-available-times .available-times-header {
+    position: absolute;
+    top: 24px;
+    left: 16px;
     margin: 0;
-    font-size: 1.25rem;
-    text-align: center;
 }
 
-.student-available-times .dashboard-menu-button {
-    grid-column: 1;
-    grid-row: 1;
+.student-available-times .available-times-menu-button {
     width: 44px;
     height: 44px;
     padding: 0;
     font-size: 1.5rem;
 }
 
-.student-available-times .dashboard-menu-button:focus-visible {
+.student-available-times .available-times-menu-button:focus-visible {
     outline: 3px solid #212529;
     outline-offset: 3px;
 }
@@ -131,24 +119,12 @@
     .student-available-times .dashboard-main {
         padding: 24px 40px;
     }
-
-    .student-available-times .dashboard-header {
-        display: block;
-        min-height: auto;
-    }
-
-    .student-available-times .dashboard-brand {
-        max-width: 350px;
-        background-color: #d9d9d9;
-    }
-
 }
 
 
 /* ===== Mobil ===== */
 
 @media (max-width: 767.98px) {
-
     .available-time-card {
         align-items: flex-start;
     }
@@ -156,5 +132,16 @@
     .select-time-button {
         align-self: center;
     }
+}
 
+/* ===== Vald tid – mobil och desktop ===== */
+
+.student-available-times .available-time-card.selected {
+    outline: 3px solid #212529;
+    outline-offset: 2px;
+}
+
+.student-available-times .select-time-button[aria-pressed="true"] {
+    background-color: #212529;
+    color: #ffffff;
 }

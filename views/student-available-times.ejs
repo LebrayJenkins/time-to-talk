@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", { title: "Välj datum och tid" , pageStylesheets:
-    [ "/stylesheets/student-available-times.css" , "/stylesheets/logo.css" ] }) %>
+<%- include("partials/head", { title: "Välj datum och tid" , pageStylesheets: [ "/stylesheets/student-sidebar.css"
+    , "/stylesheets/student-available-times.css" , "/stylesheets/logo.css" ] }) %>
 
     <body class="student-available-times">
 
@@ -10,10 +10,10 @@
             Hoppa till huvudinnehållet
         </a>
 
-        <!-- Mobilheader med menyknapp -->
-        <header class="mobile-header">
-            <button type="button" class="btn btn-outline-dark mobile-menu-button d-md-none" data-bs-toggle="offcanvas"
-                data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu" aria-label="Öppna meny">
+        <header class="available-times-header">
+            <button type="button" class="btn btn-outline-dark available-times-menu-button d-md-none"
+                data-bs-toggle="offcanvas" data-bs-target="#student-mobile-menu" aria-controls="student-mobile-menu"
+                aria-label="Öppna meny">
                 <span aria-hidden="true">☰</span>
             </button>
         </header>
@@ -76,7 +76,7 @@
                                 <section aria-labelledby="times-heading">
 
                                     <h2 id="times-heading" class="h5 mb-3">
-                                        Välj datum och tid
+                                        Lediga tider
                                     </h2>
 
                                     <% if (availableTimes && availableTimes.length> 0) { %>

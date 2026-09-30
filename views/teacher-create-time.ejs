@@ -1,156 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 
-<%- include("partials/head", {
-        title: "Skapa ny tid",
-        pageStylesheets: [
-            "/stylesheets/teacher-create-time.css",
-            "/stylesheets/teacher-sidebar.css",
-            "/stylesheets/logo.css"
-        ]
-}) %>
+<%- include("partials/head", { title: "Skapa ny tid" , pageStylesheets: [ "/stylesheets/teacher-create-time.css"
+    , "/stylesheets/teacher-sidebar.css" , "/stylesheets/logo.css" ] }) %>
 
+    <body class="teacher-create-time">
 
-<body>
-    <!-- Mobilheader med menyknapp -->
-    <header class="mobile-header">
-        <button
-            type="button"
-            class="btn btn-outline-dark mobile-menu-button d-md-none"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#teacher-mobile-menu"
-            aria-controls="teacher-mobile-menu"
-            aria-label="Öppna meny">
-            <span aria-hidden="true">☰</span>
-        </button>
-    </header>
+        <a class="skip-link" href="#main-content">
+            Hoppa till huvudinnehållet
+        </a>
 
-      <!-- Logotyp som hero på mobil -->
-    <div class="mobile-logo-hero">
-        <%- include("partials/logo") %>
-    </div>
+        <!-- Menyknapp för mobil -->
+        <div class="mobile-header d-md-none">
+            <button type="button" class="btn btn-outline-dark mobile-menu-button" data-bs-toggle="offcanvas"
+                data-bs-target="#teacher-mobile-menu" aria-controls="teacher-mobile-menu" aria-label="Öppna meny">
+                <span aria-hidden="true">☰</span>
+            </button>
+        </div>
 
-    <div class="page">
+        <!-- Logotyp för mobil -->
+        <div class="mobile-logo-hero">
+            <%- include("partials/logo") %>
+        </div>
 
-        <!-- Vänstersidomeny -->
-        <%- include("partials/teacher-sidebar") %>
+        <div class="page">
 
-        <!-- Huvudinnehåll -->
-        <main class="main-content">
+            <%- include("partials/teacher-sidebar") %>
 
-            <div class="content-wrapper">
+                <main id="main-content" class="main-content" tabindex="-1">
 
-                <h1>Skapa ny tid</h1>
+                    <div class="content-wrapper">
 
-                <% if (typeof error !== "undefined" && error) { %>
-                    <div class="alert alert-danger mb-4" role="alert">
-                        <%= error %>
-                    </div>
-                <% } %>
+                        <h1>Skapa ny tid</h1>
 
-                <form action="/teacher/tider/skapa" method="POST">
-
-                    <!-- Aktivitet -->
-                    <div class="mb-4">
-                        <label for="activity" class="form-label">
-                            Välj aktivitet
-                        </label>
-
-                        <select
-                            id="activity"
-                            name="activity"
-                            class="form-select"
-                            required
-                        >
-                            <option value="">Välj aktivitet</option>
-                            <option value="Handledning">Handledning</option>
-                            <option value="Redovisning">Redovisning</option>
-                            <option value="Muntligt förhör">Muntligt förhör</option>
-                        </select>
-                    </div>
-
-                    <!-- Datum -->
-                    <div class="mb-4">
-                        <label for="date" class="form-label">
-                            Datum
-                        </label>
-
-                        <input
-                            type="date"
-                            id="date"
-                            name="date"
-                            class="form-control"
-                            min="<%= new Date().toISOString().split('T')[0] %>"
-                            required
-                        >
-                    </div>
-
-                    <!-- Tid -->
-                    <div class="mb-4">
-                        <label class="form-label">
-                            Tid
-                        </label>
-
-                        <div class="row g-3">
-
-                            <div class="col-12 col-sm-6">
-                                <label for="start_time" class="form-label">
-                                    Starttid
-                                </label>
-
-                                <input
-                                    type="time"
-                                    id="start_time"
-                                    name="start_time"
-                                    class="form-control"
-                                    required
-                                >
+                        <% if (typeof error !=="undefined" && error) { %>
+                            <div class="alert alert-danger mb-4" role="alert">
+                                <%= error %>
                             </div>
+                            <% } %>
 
-                            <div class="col-12 col-sm-6">
-                                <label for="end_time" class="form-label">
-                                    Sluttid
-                                </label>
+                                <form action="/teacher/tider/skapa" method="POST">
 
-                                <input
-                                    type="time"
-                                    id="end_time"
-                                    name="end_time"
-                                    class="form-control"
-                                    required
-                                >
-                            </div>
+                                    <!-- Aktivitet -->
+                                    <div class="mb-4">
+                                        <label for="activity" class="form-label">
+                                            Välj aktivitet
+                                        </label>
 
-                        </div>
+                                        <select id="activity" name="activity" class="form-select" required>
+                                            <option value="">Välj aktivitet</option>
+                                            <option value="Handledning">Handledning</option>
+                                            <option value="Redovisning">Redovisning</option>
+                                            <option value="Muntligt förhör">Muntligt förhör</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Datum -->
+                                    <div class="mb-4">
+                                        <label for="date" class="form-label">
+                                            Datum
+                                        </label>
+
+                                        <input type="date" id="date" name="date" class="form-control"
+                                            min="<%= new Date().toISOString().split('T')[0] %>" required>
+                                    </div>
+
+                                    <!-- Tid -->
+                                    <fieldset class="mb-4">
+                                        <legend class="form-label fs-6 time-legend">
+                                            Tid
+                                        </legend>
+
+                                        <div class="row g-3">
+
+                                            <div class="col-12 col-sm-6">
+                                                <label for="start_time" class="form-label">
+                                                    Starttid
+                                                </label>
+
+                                                <input type="time" id="start_time" name="start_time"
+                                                    class="form-control" required>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6">
+                                                <label for="end_time" class="form-label">
+                                                    Sluttid
+                                                </label>
+
+                                                <input type="time" id="end_time" name="end_time" class="form-control"
+                                                    required>
+                                            </div>
+
+                                        </div>
+                                    </fieldset>
+
+                                    <!-- Knappar -->
+                                    <div class="d-flex flex-row gap-3 justify-content-center mt-4">
+
+                                        <button type="button" class="btn button-cancel"
+                                            onclick="window.location.href='/teacher/dashboard'">
+                                            Avbryt
+                                        </button>
+
+                                        <button type="submit" class="btn button-submit">
+                                            Publicera tid
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
                     </div>
 
-                    <!-- Knappar -->
-                    <div class="d-flex flex-row gap-3 justify-content-center mt-4">
+                </main>
 
-                        <button
-                            type="button"
-                            class="btn button-cancel"
-                            onclick="window.location.href='/teacher/dashboard'"
-                        >
-                            Avbryt
-                        </button>
+        </div>
 
-                        <button
-                            type="submit"
-                            class="btn button-submit"
-                        >
-                            Publicera tid
-                        </button>
+        <%- include("partials/scripts") %>
 
-                    </div>
+    </body>
 
-                </form>
-
-            </div>
-
-        </main>
-
-    </div>
-    <%- include("partials/scripts") %>
-</body>
 </html>
