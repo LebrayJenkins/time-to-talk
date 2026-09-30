@@ -1,8 +1,11 @@
 :root {
-    --color-primary: #0a58ca;
-    --color-background: #f8f9fa;
-    --color-text: #212529;
-    --color-focus: #ffbf47;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-sidebar-bg: #0f172a;
+    --color-background: #f8fafc;
+    --color-text: #0f172a;
+    --color-text-muted: #475569;
+    --color-focus: #2563eb;
     --border-radius: 8px;
 }
 
@@ -55,7 +58,7 @@ textarea:focus-visible {
     z-index: 1100;
     padding: 12px 16px;
     color: #ffffff;
-    background-color: #212529;
+    background-color: #0f172a;
 }
 
 .skip-link:focus {
@@ -92,7 +95,7 @@ textarea:focus-visible {
     width: 193px;
     min-height: 100vh;
     flex-shrink: 0;
-    background: #777777;
+    background: #0f172a;
     position: relative;
     padding: 42px 33px;
 }

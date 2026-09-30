@@ -5,12 +5,15 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 8px;
 }
 
 .auth-logo-img {
     width: 80px;
     height: 80px;
     object-fit: contain;
+    /* Exakt primärblått (#2563eb) – matchar knappfärgen och bilden */
+    filter: brightness(0) saturate(100%) invert(25%) sepia(90%) saturate(1800%) hue-rotate(210deg) brightness(100%) contrast(95%);
 }
 
 .auth-title {
@@ -18,11 +21,23 @@
     font-family: Arial, sans-serif;
     font-size: 24px;
     font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #0f172a;
 }
 
+/* Mörka vyer (Sidomeny i elev- och lärarvy) */
+.student-sidebar .auth-logo-img,
+.teacher-sidebar .auth-logo-img {
+    /* Exakt samma blå som knapparna (#2563eb) */
+    filter: brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(213deg) brightness(99%) contrast(97%);
+}
+
+.student-sidebar .auth-title,
+.teacher-sidebar .auth-title {
+    color: #ffffff;
+}
 
 /* Mobil: loggan används som hero */
-
 .mobile-logo-hero {
     display: flex;
     justify-content: center;
@@ -36,12 +51,11 @@
 }
 
 .mobile-logo-hero .auth-title {
-    font-size: 28px;
+    font-size: 26px;
+    color: #0f172a;
 }
 
-
 /* Desktop: mobil-heron ska inte visas */
-
 @media (min-width: 768px) {
     .mobile-logo-hero {
         display: none;

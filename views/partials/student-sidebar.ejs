@@ -19,15 +19,15 @@
         </div>
 
         <nav class="nav flex-column gap-2" aria-label="Elevmeny">
-            <a class="nav-link" href="/student-dashboard">
+            <a class="nav-link<%= (currentPath === '/student-dashboard') ? ' active' : '' %>" href="/student-dashboard" <%= (currentPath === '/student-dashboard') ? 'aria-current="page"' : '' %>>
                 Min översikt
             </a>
 
-            <a class="nav-link" href="/student/bokningar">
+            <a class="nav-link<%= (currentPath && currentPath.startsWith('/student/bokningar')) ? ' active' : '' %>" href="/student/bokningar" <%= (currentPath && currentPath.startsWith('/student/bokningar')) ? 'aria-current="page"' : '' %>>
                 Mina bokningar
             </a>
 
-            <a class="nav-link" href="/student/lediga-tider">
+            <a class="nav-link<%= (currentPath && currentPath.startsWith('/student/lediga-tider')) ? ' active' : '' %>" href="/student/lediga-tider" <%= (currentPath && currentPath.startsWith('/student/lediga-tider')) ? 'aria-current="page"' : '' %>>
                 Boka tid
             </a>
         </nav>

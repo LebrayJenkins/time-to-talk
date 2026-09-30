@@ -28,17 +28,22 @@
     font-size: 1.5rem;
 }
 
+/* Samma innehållsbredd och grå bakgrund som dashboarden */
 .student-booking-cancellation-confirmation .booking-details-content {
     max-width: 520px;
 }
 
 .student-booking-cancellation-confirmation .booking-details-card {
-    padding: 20px;
-    background-color: #eeeeee;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .student-booking-cancellation-confirmation .booking-details-card h2 {
     overflow-wrap: anywhere;
+    color: #1e293b;
 }
 
 .student-booking-cancellation-confirmation .booking-details-information {
@@ -48,9 +53,16 @@
     margin: 0;
 }
 
+.student-booking-cancellation-confirmation .booking-details-information dt {
+    color: #475569;
+    font-weight: 500;
+}
+
 .student-booking-cancellation-confirmation .booking-details-information dd {
     margin: 0;
     overflow-wrap: anywhere;
+    color: #1e293b;
+    font-weight: 600;
 }
 
 .student-booking-cancellation-confirmation .booking-details-actions {
@@ -66,10 +78,35 @@
     align-items: center;
     justify-content: center;
     min-height: 44px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    color: #1e293b;
+}
+
+.student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark:hover,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary:hover {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.student-booking-cancellation-confirmation .booking-details-actions .btn-danger {
+    background-color: #dc2626;
+    border: none;
+    color: #ffffff;
+}
+
+.student-booking-cancellation-confirmation .booking-details-actions .btn-danger:hover {
+    background-color: #b91c1c;
 }
 
 .student-booking-cancellation-confirmation .booking-details-main .btn:focus-visible {
-    outline: 3px solid #212529;
+    outline: 3px solid #2563eb;
     outline-offset: 3px;
 }
 
