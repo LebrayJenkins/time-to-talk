@@ -95,23 +95,18 @@
     margin: 0;
 }
 
-.available-time-date {
-    font-size: 0.9rem;
-    color: #475569;
-}
-
-.available-time-clock {
+.available-time-activity {
+    font-size: 1rem;
     font-weight: 700;
     color: #1e293b;
+    margin-bottom: 4px;
 }
 
-.available-time-activity {
+.available-time-teacher,
+.available-time-date,
+.available-time-clock {
     font-size: 0.9rem;
-    color: #475569;
-}
-
-.available-time-teacher {
-    font-size: 0.85rem;
+    font-weight: 400;
     color: #475569;
 }
 

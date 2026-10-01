@@ -68,7 +68,7 @@
 .student-booking-cancellation-confirmation .booking-details-actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
     margin-top: 24px;
 }
@@ -89,10 +89,20 @@
     color: #1e293b;
 }
 
+/* Normal text på Behåll bokningen */
+.student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark {
+    font-weight: 400;
+}
+
 .student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark:hover,
-.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary:hover {
-    background-color: #f8fafc;
-    color: #1e293b;
+.student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark:focus-visible,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-outline-dark:active,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary:hover,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary:focus-visible,
+.student-booking-cancellation-confirmation .booking-details-actions .btn-secondary:active {
+    background-color: #212529;
+    border-color: #212529;
+    color: #ffffff;
 }
 
 .student-booking-cancellation-confirmation .booking-details-actions .btn-danger {

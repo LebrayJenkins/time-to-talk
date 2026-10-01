@@ -175,3 +175,14 @@
     outline: 3px solid #2563eb;
     outline-offset: 3px;
 }
+
+.student-booking-success .booking-success-actions a:not(.btn) {
+    color: #1d4ed8;
+    font-size: 1rem;
+    font-weight: 400;
+    text-decoration: underline;
+}
+
+.student-booking-success .booking-success-actions a:not(.btn):hover {
+    color: #1e40af;
+}

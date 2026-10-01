@@ -101,8 +101,9 @@
 
 .teacher-create-time .button-cancel {
     background-color: #ffffff;
-    border: 1px solid #d1d5db;
-    color: #1e293b;
+    border: 1px solid #212529;
+    color: #212529;
+    font-weight: 400;
 }
 
 .teacher-create-time .button-submit {
@@ -111,9 +112,12 @@
     color: #ffffff;
 }
 
-.teacher-create-time .button-cancel:hover {
-    background-color: #f8fafc;
-    color: #1e293b;
+.teacher-create-time .button-cancel:hover,
+.teacher-create-time .button-cancel:focus-visible,
+.teacher-create-time .button-cancel:active {
+    background-color: #212529;
+    border-color: #212529;
+    color: #ffffff;
 }
 
 .teacher-create-time .button-submit:hover {

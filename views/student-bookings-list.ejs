@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="bookings-content">
-                        <h1 class="h4 mb-4">Mina bokningar</h1>
+                        <h1 class="h4 mb-4 fw-bold">Mina bokningar</h1>
 
                         <% if (bookings.length> 0) { %>
                             <ul class="bookings-list">
@@ -34,8 +34,8 @@
                                     <li class="booking-item">
                                         <dl class="booking-information">
                                             <div>
-                                                <dt>Datum</dt>
-                                                <dd>
+                                                <dt class="fw-bold">Datum</dt>
+                                                <dd class="fw-normal">
                                                     <time datetime="<%= booking.date %>">
                                                         <%= booking.date %>
                                                     </time>
@@ -43,8 +43,8 @@
                                             </div>
 
                                             <div>
-                                                <dt>Tid</dt>
-                                                <dd>
+                                                <dt class="fw-bold">Tid</dt>
+                                                <dd class="fw-normal">
                                                     <time datetime="<%= booking.date %>T<%= booking.start_time %>">
                                                         <%= booking.start_time.slice(0, 5) %>
                                                     </time>
@@ -56,15 +56,15 @@
                                             </div>
 
                                             <div>
-                                                <dt>Aktivitet</dt>
-                                                <dd>
+                                                <dt class="fw-bold">Aktivitet</dt>
+                                                <dd class="fw-normal">
                                                     <%= booking.activity %>
                                                 </dd>
                                             </div>
 
                                             <div>
-                                                <dt>Lärare</dt>
-                                                <dd>
+                                                <dt class="fw-bold">Lärare</dt>
+                                                <dd class="fw-normal">
                                                     <%= booking.teacher_name %>
                                                 </dd>
                                             </div>

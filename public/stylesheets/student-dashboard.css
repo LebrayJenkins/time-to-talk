@@ -84,26 +84,33 @@
     color: #1e293b;
 }
 
-.student-dashboard .dashboard-bookings .btn,
-.student-dashboard .booking-card .btn,
+/* Visa detaljer: vit i vanligt läge */
 .student-dashboard .booking-card .btn-outline-dark {
-    background-color: #2563eb;
-    border: none;
-    color: #ffffff;
+    background-color: #ffffff;
+    border: 1px solid #212529;
+    color: #212529;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 8px 16px;
     font-size: 0.875rem;
     white-space: nowrap;
     text-decoration: none;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.student-dashboard .dashboard-bookings .btn:hover,
-.student-dashboard .booking-card .btn:hover,
-.student-dashboard .booking-card .btn-outline-dark:hover {
-    background-color: #1d4ed8;
+/* Svart vid muspekare, tangentbordsfokus och klick */
+.student-dashboard .booking-card .btn-outline-dark:hover,
+.student-dashboard .booking-card .btn-outline-dark:focus-visible,
+.student-dashboard .booking-card .btn-outline-dark:active {
+    background-color: #212529;
+    border-color: #212529;
     color: #ffffff;
+}
+
+/* Tydlig fokusmarkering när man tabbar */
+.student-dashboard .booking-card .btn-outline-dark:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
 }
 
 /* Bokningsalternativ */

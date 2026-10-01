@@ -32,7 +32,7 @@
 
                         <div class="booking-success-heading">
                             <span class="booking-success-check" aria-hidden="true">✓</span>
-                            <h1 class="h4">Din bokning är bekräftad!</h1>
+                            <h1 class="h4 fw-bold">Din bokning är bekräftad!</h1>
                         </div>
 
                         <section class="booking-details-card" aria-labelledby="booking-heading">
@@ -46,26 +46,26 @@
                                         <path d="M8 3v4M16 3v4M4 10h16M8 15l3 3 5-5" />
                                     </svg>
                                 </span>
-                                <h2 id="booking-heading" class="h5 mb-0">
+                                <h2 id="booking-heading" class="h5 mb-0 fw-bold">
                                     <%= booking.activity %>
                                 </h2>
                             </div>
 
                             <dl class="booking-details-information">
-                                <dt>Lärare</dt>
-                                <dd>
+                                <dt class="fw-bold">Lärare</dt>
+                                <dd class="fw-normal">
                                     <%= booking.teacher_name %>
                                 </dd>
 
-                                <dt>Datum</dt>
-                                <dd>
+                                <dt class="fw-bold">Datum</dt>
+                                <dd class="fw-normal">
                                     <time datetime="<%= booking.date %>">
                                         <%= booking.date %>
                                     </time>
                                 </dd>
 
-                                <dt>Tid</dt>
-                                <dd>
+                                <dt class="fw-bold">Tid</dt>
+                                <dd class="fw-normal">
                                     <time datetime="<%= booking.date %>T<%= booking.start_time %>">
                                         <%= booking.start_time.slice(0, 5) %>
                                     </time>

@@ -31,7 +31,7 @@
 
                     <div class="booking-details-content">
 
-                        <h1 class="h4 mb-4">Bokningsdetaljer</h1>
+                        <h1 class="h4 mb-4 fw-bold">Bokningsdetaljer</h1>
 
                         <section class="booking-details-card" aria-labelledby="booking-heading">
 
@@ -45,26 +45,26 @@
                                     </svg>
                                 </span>
 
-                                <h2 id="booking-heading" class="h5 mb-0">
+                                <h2 id="booking-heading" class="h5 mb-0 fw-bold">
                                     <%= booking.activity %>
                                 </h2>
                             </div>
 
                             <dl class="booking-details-information">
-                                <dt>Lärare</dt>
-                                <dd>
+                                <dt class="fw-bold">Lärare</dt>
+                                <dd class="fw-normal">
                                     <%= booking.teacher_name %>
                                 </dd>
 
-                                <dt>Datum</dt>
-                                <dd>
+                                <dt class="fw-bold">Datum</dt>
+                                <dd class="fw-normal">
                                     <time datetime="<%= booking.date %>">
                                         <%= booking.date %>
                                     </time>
                                 </dd>
 
-                                <dt>Tid</dt>
-                                <dd>
+                                <dt class="fw-bold">Tid</dt>
+                                <dd class="fw-normal">
                                     <time datetime="<%= booking.date %>T<%= booking.start_time %>">
                                         <%= booking.start_time.slice(0, 5) %>
                                     </time>
